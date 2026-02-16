@@ -190,6 +190,25 @@
       color: #e7f0ff;
     }
 
+    .context-strip {
+      border: 1px solid #36557f;
+      background: #11223e;
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: grid;
+      gap: 5px;
+    }
+    .context-label {
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #cfe4ff;
+    }
+    .context-text {
+      font-size: 12px;
+      color: #e6f1ff;
+    }
+
     .quick-nav a:focus-visible,
     .btn:focus-visible,
     .task:focus-visible,
@@ -461,6 +480,10 @@
       <section class="command-strip" aria-label="Immediate command">
         <span class="command-label">Immediate command</span>
         <span class="command-text" id="missionCommand">Open top task, move flow, copy brief.</span>
+      </section>
+      <section class="context-strip" aria-label="Current context">
+        <span class="context-label">Current context</span>
+        <span class="context-text" id="contextTrail">Workboard › No task selected</span>
       </section>
       <div class="stats" id="stats"></div>
       <div class="actions">
@@ -757,7 +780,14 @@
       ].join('');
       qs('heroTitle').textContent = app.state.heroTitle;
       qs('heroSub').textContent = app.state.heroSub;
-      qs('boardMeta').textContent = app.selectedTaskId ? `Editing ${getTaskById(app.selectedTaskId)?.title || 'task'}` : 'No task selected';
+      const selectedTask = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
+      qs('boardMeta').textContent = selectedTask ? `Editing ${selectedTask.title || 'task'}` : 'No task selected';
+      const contextTrail = qs('contextTrail');
+      if (contextTrail) {
+        contextTrail.textContent = selectedTask
+          ? `Workboard › ${LANE_LABEL[selectedTask.status]} › ${selectedTask.title}`
+          : 'Workboard › No task selected';
+      }
 
       const topNow = sortedTasks('now')[0];
       const topNext = sortedTasks('next')[0];
