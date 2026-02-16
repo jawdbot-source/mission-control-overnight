@@ -84,6 +84,22 @@
       display: grid;
       place-items: center;
     }
+
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quick-nav a {
+      text-decoration: none;
+      color: #d8e6ff;
+      border: 1px solid #39567f;
+      background: #11223c;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+    .quick-nav a:hover { border-color: #83c4ff; }
     .pill {
       border: 1px solid #3b5275;
       background: #172742;
@@ -237,6 +253,12 @@
           <span class="muted">Copy execution brief and run.</span>
         </div>
       </div>
+      <nav class="quick-nav" aria-label="Mission Control quick navigation">
+        <a href="#workboardSection">Go: Workboard</a>
+        <a href="#taskPanelSection">Go: Task details</a>
+        <a href="#strikeDeskSection">Go: Strike desk</a>
+        <a href="#updatesSection">Go: Recent updates</a>
+      </nav>
       <div class="stats" id="stats"></div>
       <div class="actions">
         <button class="btn primary" id="addTaskBtn">Add task</button>
@@ -250,7 +272,7 @@
     </section>
 
     <section class="layout">
-      <article class="card board-wrap">
+      <article class="card board-wrap" id="workboardSection">
         <div class="board-head">
           <div class="board-head-meta">
             <h2>Workboard</h2>
@@ -264,7 +286,7 @@
         <div class="board" id="board"></div>
       </article>
 
-      <aside class="card panel">
+      <aside class="card panel" id="taskPanelSection">
         <section class="panel-section">
           <h3>Task details</h3>
           <div id="taskEmpty" class="empty">Select a task card to edit details and move status.</div>
@@ -314,7 +336,7 @@
           <div class="muted" id="heartbeatSummary">No loop status yet.</div>
         </section>
 
-        <section class="panel-section">
+        <section class="panel-section" id="strikeDeskSection">
           <h3>Strike desk</h3>
           <div class="muted" id="strikePolicy"></div>
           <div>
@@ -329,7 +351,7 @@
           <button class="btn" id="copyStrikeBriefBtn">Copy strike brief</button>
         </section>
 
-        <section class="panel-section">
+        <section class="panel-section" id="updatesSection">
           <h3>Recent updates</h3>
           <div class="row">
             <input id="feedInput" placeholder="Add a progress note" style="flex:1" />

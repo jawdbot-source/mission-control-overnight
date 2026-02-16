@@ -14,6 +14,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Persist board changes in browser `localStorage`
 - Reset back to baseline `state.json`
 - **10-second workflow map** at top to orient Plan → Edit → Unblock → Share instantly
+- Quick-navigation chips jump directly to Workboard, Task details, Strike desk, and Recent updates
 - Action status line confirms control results (save/open/copy/import/export/reset)
 - Execution flow controls: pull top Next → Now, unblock top Blocked → Next, and one-click lane moves from task editor
 - Strike Desk section for Strike coordination (policy guardrail, focus list, notes, copyable strike brief)
