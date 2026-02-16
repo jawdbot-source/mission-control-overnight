@@ -1,5 +1,5 @@
 {
-  "heroTitle": "Mission Control — Strike DD",
+  "heroTitle": "Mission Control \u2014 Strike DD",
   "heroSub": "Execution-first board with editable tasks, blockers, and a copy-ready brief.",
   "validationCriteria": [
     "Top priorities are obvious in under 10 seconds.",
@@ -93,5 +93,16 @@
       "time": "now",
       "level": "critical"
     }
-  ]
+  ],
+  "strikeDesk": {
+    "policy": "Rule: Mission Control can coordinate Strike, but do not edit Strike product code (frontend/src, backend/src).",
+    "focus": [
+      "Capture incidents + triage priorities",
+      "Draft Claude Code execution prompts for Jul",
+      "Prepare daily VC + market brief"
+    ],
+    "notes": [
+      "Working rule: no direct edits to Strike product code from this workspace loop."
+    ]
+  }
 }

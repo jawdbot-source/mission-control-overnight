@@ -178,6 +178,9 @@
     .feed-item { border: 1px solid #2b4065; border-radius: 8px; padding: 8px; background: #14243f; }
     .feed-item .meta { color: var(--muted); font-size: 12px; }
 
+    .strike-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+    .strike-list li { color: #dbe8ff; }
+
     .modal {
       position: fixed;
       inset: 0;
@@ -312,6 +315,21 @@
         </section>
 
         <section class="panel-section">
+          <h3>Strike desk</h3>
+          <div class="muted" id="strikePolicy"></div>
+          <div>
+            <div class="muted">Today focus</div>
+            <ul class="strike-list" id="strikeFocus"></ul>
+          </div>
+          <div class="row">
+            <input id="strikeNoteInput" placeholder="Add strike note / request" style="flex:1" />
+            <button class="btn" id="strikeNoteAddBtn">Add note</button>
+          </div>
+          <div class="feed" id="strikeNotes"></div>
+          <button class="btn" id="copyStrikeBriefBtn">Copy strike brief</button>
+        </section>
+
+        <section class="panel-section">
           <h3>Recent updates</h3>
           <div class="row">
             <input id="feedInput" placeholder="Add a progress note" style="flex:1" />
@@ -384,7 +402,8 @@
           'Board updates persist after refresh.'
         ],
         tasks: tasks.map(normalizeTask),
-        feed: Array.isArray(raw.feed) ? raw.feed.slice(0, 30).map(normalizeFeed) : []
+        feed: Array.isArray(raw.feed) ? raw.feed.slice(0, 30).map(normalizeFeed) : [],
+        strikeDesk: normalizeStrikeDesk(raw.strikeDesk || {})
       };
     }
 
@@ -409,6 +428,23 @@
         text: String(f.text || '').trim() || 'Update',
         time: f.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         level: f.level || 'info'
+      };
+    }
+
+    function normalizeStrikeDesk(raw = {}) {
+      const normalizeList = (arr, fallback = []) => {
+        if (!Array.isArray(arr)) return fallback;
+        return arr.map((x) => String(x || '').trim()).filter(Boolean).slice(0, 12);
+      };
+
+      return {
+        policy: String(raw.policy || 'Rule: Mission Control can coordinate Strike, but do not edit Strike product code (frontend/src, backend/src).').trim(),
+        focus: normalizeList(raw.focus, [
+          'Capture incidents + triage priorities',
+          'Draft Claude Code execution prompts for Jul',
+          'Prepare daily VC + market brief',
+        ]),
+        notes: normalizeList(raw.notes, []),
       };
     }
 
@@ -575,6 +611,40 @@
         : '<div class="empty">No updates yet.</div>';
     }
 
+    function buildStrikeBrief() {
+      const now = sortedTasks('now').slice(0, 3).map((t, i) => `${i + 1}. ${t.title}`).join('\n') || 'None';
+      const blocked = sortedTasks('blocked').slice(0, 2).map((t, i) => `${i + 1}. ${t.title}`).join('\n') || 'None';
+      const notes = app.state.strikeDesk.notes.length
+        ? app.state.strikeDesk.notes.slice(-4).map((n, i) => `${i + 1}. ${n}`).join('\n')
+        : 'None';
+
+      return [
+        'Strike Brief — operator snapshot',
+        '',
+        `Policy: ${app.state.strikeDesk.policy}`,
+        '',
+        'Top Now:',
+        now,
+        '',
+        'Current Blockers:',
+        blocked,
+        '',
+        'Recent Strike notes:',
+        notes,
+      ].join('\n');
+    }
+
+    function renderStrikeDesk() {
+      const desk = app.state.strikeDesk || normalizeStrikeDesk();
+      qs('strikePolicy').textContent = desk.policy;
+      qs('strikeFocus').innerHTML = desk.focus.length
+        ? desk.focus.map((item) => `<li>${escapeHtml(item)}</li>`).join('')
+        : '<li>No focus items yet.</li>';;
+      qs('strikeNotes').innerHTML = desk.notes.length
+        ? desk.notes.slice().reverse().map((n) => `<div class="feed-item">${escapeHtml(n)}</div>`).join('')
+        : '<div class="empty">No strike notes yet.</div>';;
+    }
+
     function flashAction(text, level = 'info') {
       const notice = qs('actionNotice');
       if (!notice) return;
@@ -594,6 +664,7 @@
       renderPrompt();
       renderCriteria();
       renderHeartbeat();
+      renderStrikeDesk();
       renderFeed();
     }
 
@@ -791,6 +862,26 @@
         }
         app.selectedTaskId = blockedTask.id;
         moveSelectedTask('next');
+      });
+
+      qs('strikeNoteAddBtn').addEventListener('click', () => {
+        const note = qs('strikeNoteInput').value.trim();
+        if (!note) return;
+        app.state.strikeDesk.notes.push(note);
+        app.state.strikeDesk.notes = app.state.strikeDesk.notes.slice(-20);
+        qs('strikeNoteInput').value = '';
+        persist();
+        render();
+        flashAction('Strike note added.', 'ok');
+      });
+
+      qs('copyStrikeBriefBtn').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(buildStrikeBrief());
+          flashAction('Strike brief copied.', 'ok');
+        } catch {
+          flashAction('Strike brief copy failed.', 'warn');
+        }
       });
 
       qs('feedAddBtn').addEventListener('click', () => {

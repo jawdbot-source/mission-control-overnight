@@ -16,6 +16,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - **10-second workflow map** at top to orient Plan → Edit → Unblock → Share instantly
 - Action status line confirms control results (save/open/copy/import/export/reset)
 - Execution flow controls: pull top Next → Now, unblock top Blocked → Next, and one-click lane moves from task editor
+- Strike Desk section for Strike coordination (policy guardrail, focus list, notes, copyable strike brief)
 
 ## Files
 
