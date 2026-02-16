@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080b12" />
+  <meta name="color-scheme" content="dark" />
   <title>Mission Control — Workboard</title>
   <style>
     :root {
@@ -22,6 +24,22 @@
     }
 
     * { box-sizing: border-box; }
+
+    html { color-scheme: dark; }
+
+    .skip-link {
+      position: absolute;
+      left: 10px;
+      top: -44px;
+      background: #0f2444;
+      color: #e6f1ff;
+      border: 1px solid #78b8ff;
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-decoration: none;
+      z-index: 1000;
+    }
+    .skip-link:focus-visible { top: 10px; }
     body {
       margin: 0;
       color: var(--text);
@@ -100,6 +118,17 @@
       font-size: 12px;
     }
     .quick-nav a:hover { border-color: #83c4ff; }
+
+    .quick-nav a:focus-visible,
+    .btn:focus-visible,
+    .task:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 2px solid #9fd2ff;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 2px #9fd2ff33;
+    }
     .pill {
       border: 1px solid #3b5275;
       background: #172742;
@@ -117,6 +146,8 @@
       padding: 7px 10px;
       font-size: 12px;
       cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(115, 184, 255, 0.25);
     }
     .btn:hover { border-color: #83c4ff; }
     .btn.primary { background: #1f4675; border-color: #83c4ff; }
@@ -211,6 +242,19 @@
 
     .empty { color: var(--muted); font-size: 13px; border: 1px dashed #2f4364; border-radius: 8px; padding: 9px; }
 
+    #workboardSection,
+    #taskPanelSection,
+    #strikeDeskSection,
+    #updatesSection { scroll-margin-top: 16px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0ms !important;
+        transition-duration: 0ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     @media (max-width: 1120px) {
       .layout { grid-template-columns: 1fr; }
       .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -224,7 +268,8 @@
   </style>
 </head>
 <body>
-  <main class="wrap">
+  <a href="#workboardSection" class="skip-link">Skip to Workboard</a>
+  <main class="wrap" id="mainContent">
     <section class="card topbar">
       <div class="title">
         <h1 id="heroTitle">Mission Control</h1>
@@ -267,7 +312,7 @@
         <button class="btn" id="importBtn">Import board JSON</button>
         <button class="btn warn" id="resetBtn">Reset to baseline</button>
       </div>
-      <div class="action-notice" id="actionNotice" data-level="info">Ready.</div>
+      <div class="action-notice" id="actionNotice" data-level="info" aria-live="polite">Ready.</div>
       <input id="importInput" type="file" accept="application/json" style="display:none" />
     </section>
 
@@ -291,22 +336,22 @@
           <h3>Task details</h3>
           <div id="taskEmpty" class="empty">Select a task card to edit details and move status.</div>
           <div id="taskEditor" style="display:none; gap:8px;">
-            <label>Title<input id="taskTitle" /></label>
-            <label>Description<textarea id="taskDescription"></textarea></label>
+            <label>Title<input id="taskTitle" name="taskTitle" autocomplete="off" /></label>
+            <label>Description<textarea id="taskDescription" name="taskDescription" autocomplete="off" placeholder="Describe the task…"></textarea></label>
             <div class="row">
               <label style="flex:1">Status
-                <select id="taskStatus">
+                <select id="taskStatus" name="taskStatus" autocomplete="off">
                   <option value="now">Now</option>
                   <option value="next">Next</option>
                   <option value="blocked">Blocked</option>
                   <option value="done">Done</option>
                 </select>
               </label>
-              <label style="flex:1">Priority (1 = highest)<input id="taskPriority" type="number" min="1" max="99" /></label>
+              <label style="flex:1">Priority (1 = highest)<input id="taskPriority" name="taskPriority" type="number" min="1" max="99" inputmode="numeric" autocomplete="off" /></label>
             </div>
-            <label>Link (optional)<input id="taskLink" placeholder="https://..." /></label>
-            <label>Owner<input id="taskOwner" placeholder="who should do this" /></label>
-            <label>Definition of done<textarea id="taskDoD" placeholder="One checklist item per line"></textarea></label>
+            <label>Link (optional)<input id="taskLink" name="taskLink" type="url" autocomplete="off" placeholder="https://example.com/…" /></label>
+            <label>Owner<input id="taskOwner" name="taskOwner" autocomplete="off" placeholder="Owner name…" /></label>
+            <label>Definition of done<textarea id="taskDoD" name="taskDoD" autocomplete="off" placeholder="One checklist item per line…"></textarea></label>
             <div class="row">
               <button class="btn ok" id="saveTaskBtn">Save task</button>
               <button class="btn" id="openTaskLinkBtn">Open link</button>
@@ -344,7 +389,7 @@
             <ul class="strike-list" id="strikeFocus"></ul>
           </div>
           <div class="row">
-            <input id="strikeNoteInput" placeholder="Add strike note / request" style="flex:1" />
+            <input id="strikeNoteInput" name="strikeNoteInput" autocomplete="off" placeholder="Add strike note / request…" style="flex:1" />
             <button class="btn" id="strikeNoteAddBtn">Add note</button>
           </div>
           <div class="feed" id="strikeNotes"></div>
@@ -354,7 +399,7 @@
         <section class="panel-section" id="updatesSection">
           <h3>Recent updates</h3>
           <div class="row">
-            <input id="feedInput" placeholder="Add a progress note" style="flex:1" />
+            <input id="feedInput" name="feedInput" autocomplete="off" placeholder="Add a progress note…" style="flex:1" />
             <button class="btn" id="feedAddBtn">Add</button>
           </div>
           <div class="feed" id="feed"></div>
@@ -363,21 +408,21 @@
     </section>
   </main>
 
-  <div class="modal" id="taskModal">
+  <div class="modal" id="taskModal" role="dialog" aria-modal="true" aria-labelledby="createTaskTitle">
     <div class="card panel modal-card">
-      <h3>Create task</h3>
-      <label>Title<input id="newTaskTitle" /></label>
-      <label>Description<textarea id="newTaskDescription"></textarea></label>
+      <h3 id="createTaskTitle">Create task</h3>
+      <label>Title<input id="newTaskTitle" name="newTaskTitle" autocomplete="off" /></label>
+      <label>Description<textarea id="newTaskDescription" name="newTaskDescription" autocomplete="off" placeholder="Describe the task…"></textarea></label>
       <div class="row">
         <label style="flex:1">Status
-          <select id="newTaskStatus">
+          <select id="newTaskStatus" name="newTaskStatus" autocomplete="off">
             <option value="now">Now</option>
             <option value="next">Next</option>
             <option value="blocked">Blocked</option>
             <option value="done">Done</option>
           </select>
         </label>
-        <label style="flex:1">Priority<input id="newTaskPriority" type="number" min="1" max="99" value="5" /></label>
+        <label style="flex:1">Priority<input id="newTaskPriority" name="newTaskPriority" type="number" min="1" max="99" value="5" inputmode="numeric" autocomplete="off" /></label>
       </div>
       <div class="row">
         <button class="btn primary" id="createTaskConfirmBtn">Create</button>
@@ -758,6 +803,13 @@
       qs('createTaskCancelBtn').addEventListener('click', () => {
         qs('taskModal').classList.remove('show');
         flashAction('Task creation canceled.', 'info');
+      });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'Escape' && qs('taskModal').classList.contains('show')) {
+          qs('taskModal').classList.remove('show');
+          flashAction('Task creation canceled.', 'info');
+        }
       });
 
       qs('createTaskConfirmBtn').addEventListener('click', () => {
