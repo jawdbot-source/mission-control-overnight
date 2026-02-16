@@ -941,8 +941,9 @@
           render();
           flashAction('Board imported from JSON.', 'ok');
         } catch {
-          alert('Import failed. Please use a valid JSON export from this board.');
-          flashAction('Import failed: invalid JSON file.', 'warn');
+          flashAction('Import failed: use a valid board JSON export.', 'warn');
+          addFeed('Import failed: invalid JSON file format', 'warn');
+          renderFeed();
         }
       });
 
