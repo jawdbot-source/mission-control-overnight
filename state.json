@@ -1,53 +1,97 @@
 {
-  "heroTitle": "Strike DD Mission Control",
-  "heroSub": "Execution board for Strike DD only — no agent-side meta work.",
+  "heroTitle": "Mission Control — Strike DD",
+  "heroSub": "Execution-first board with editable tasks, blockers, and a copy-ready brief.",
+  "validationCriteria": [
+    "Top priorities are obvious in under 10 seconds.",
+    "Every task has owner, status, and clear definition of done.",
+    "Every blocker has a concrete next action.",
+    "Execution brief can be copied and used immediately.",
+    "Task edits persist after refresh."
+  ],
   "tasks": [
     {
-      "name": "p0-auth-hardfail-prod-jwt-verify",
-      "meta": "Harden JWT verification path in prod auth flow",
-      "status": "doing"
+      "id": "auth-hardfail-prod",
+      "title": "P0 auth hard-fail in production",
+      "description": "Ensure JWT verification failures fail closed in production and log clearly for operators.",
+      "status": "now",
+      "priority": 1,
+      "owner": "agent",
+      "link": "https://github.com/lustigj-code/strike-dd/pull/191",
+      "definitionOfDone": [
+        "Production auth path fails closed when verification is unavailable",
+        "Tests cover failure + recovery path",
+        "Operator-facing error message is actionable"
+      ]
     },
     {
-      "name": "vc-v0-decision-kill-advance-v1",
-      "meta": "Align decision gate and promote-to-V1 flow semantics",
-      "status": "doing"
+      "id": "v0-v1-kill-advance",
+      "title": "VC v0 decision kill/advance semantics",
+      "description": "Align promotion semantics so legacy invest/pass maps deterministically to kill/advance in V1 flow.",
+      "status": "now",
+      "priority": 2,
+      "owner": "agent",
+      "link": "https://github.com/lustigj-code/strike-dd/pull/189",
+      "definitionOfDone": [
+        "Backend emits deterministic kill/advance semantics",
+        "Frontend respects semantics without ambiguous states",
+        "Regression tests cover legacy compatibility"
+      ]
     },
     {
-      "name": "pipeline-reconstruction-harden",
-      "meta": "Stabilize reconstruction pipeline and failure recovery",
-      "status": "ready"
+      "id": "pipeline-harden",
+      "title": "Pipeline reconstruction hardening",
+      "description": "Stabilize artifact reconstruction normalization and failure recovery paths.",
+      "status": "next",
+      "priority": 3,
+      "owner": "agent",
+      "link": "https://github.com/lustigj-code/strike-dd/pull/173",
+      "definitionOfDone": [
+        "Normalization paths are deterministic",
+        "Error handling returns machine-readable conflicts",
+        "Smoke tests pass end-to-end"
+      ]
     },
     {
-      "name": "evolution-analysis-qa-correctness",
-      "meta": "Validate analysis→QA correctness and edge-state behavior",
-      "status": "ready"
+      "id": "evolution-qa-correctness",
+      "title": "Evolution analysis + QA correctness",
+      "description": "Confirm restart semantics, unanswered ordering, and wizard navigation behavior are correct.",
+      "status": "next",
+      "priority": 4,
+      "owner": "agent",
+      "link": "https://github.com/lustigj-code/strike-dd/pull/184",
+      "definitionOfDone": [
+        "Restart semantics verified",
+        "Ordering behavior tested",
+        "Wizard navigation regressions covered"
+      ]
     },
     {
-      "name": "sec-decisions-update-bind-deal",
-      "meta": "Decision/deal binding updates are blocked on contract confirmation",
-      "status": "blocked"
+      "id": "sec-bind-deal",
+      "title": "Decision/deal binding update",
+      "description": "Blocked pending final contract confirmation. Next action: confirm contract language and update tests immediately after.",
+      "status": "blocked",
+      "priority": 5,
+      "owner": "waiting",
+      "link": "",
+      "definitionOfDone": [
+        "Contract confirmation received",
+        "Decision update query bound to deal scope",
+        "Security tests merged"
+      ]
     }
   ],
   "feed": [
     {
-      "text": "Priority confirmed: run Sprint 1 first (decision-gate parity + machine-readable promotion conflict resume).",
+      "id": "f1",
+      "text": "Rebuilt Mission Control to be interactive (editable tasks, persistence, import/export, brief generation).",
+      "time": "now",
+      "level": "important"
+    },
+    {
+      "id": "f2",
+      "text": "Primary goal: usable execution cockpit, not static screenshot.",
       "time": "now",
       "level": "critical"
-    },
-    {
-      "text": "Mission Control hard reset shipped; next quality bar is usefulness and Strike-DD-only context.",
-      "time": "now",
-      "level": "important"
-    },
-    {
-      "text": "Security warning for auth rate limiting has been remediated; follow-up is service/runtime hardening.",
-      "time": "today",
-      "level": "important"
-    },
-    {
-      "text": "Open item: finalize cron cleanup so only high-signal platform updates remain.",
-      "time": "today",
-      "level": "all"
     }
   ]
 }

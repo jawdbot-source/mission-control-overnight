@@ -1,13 +1,41 @@
-# Mission Control (Overnight)
+# Mission Control (Usable Workboard)
 
-Static Mission Control surface extracted from Strike-DD overnight work.
+Mission Control is now a **functional execution board**, not a static mock.
 
-- `index.html` — UI
-- `state.json` — board/feed payload
+## What works now
+
+- Editable task board with 4 lanes: **Now / Next / Blocked / Done**
+- Click any task card to open full detail editor
+- Update status, priority, owner, link, and definition-of-done
+- Add/delete tasks
+- Copy a generated **execution brief** from live board state
+- Add timeline/feed updates
+- Export/import board JSON
+- Persist board changes in browser `localStorage`
+- Reset back to baseline `state.json`
+
+## Files
+
+- `index.html` — UI + behavior
+- `state.json` — baseline board content
 
 ## Run locally
 
 ```bash
-python3 -m http.server 8080
-# open http://localhost:8080/
+cd /Users/openclaw/projects/strike-dd/ops/mission-control
+python3 -m http.server 8091
+# open http://127.0.0.1:8091/
 ```
+
+## Quality gate (manual smoke test)
+
+Before calling it "ready", verify:
+
+1. Click a task card → details panel opens with task values.
+2. Edit title/status/priority and click **Save task**.
+3. Refresh the page → edited values persist.
+4. Click **Copy execution brief** and confirm clipboard content changed.
+5. Add a feed item and a new task.
+6. Export JSON, reset to baseline, then import JSON and verify restore.
+
+If any check fails, it is **not done**.

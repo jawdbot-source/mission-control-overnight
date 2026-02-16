@@ -3,220 +3,539 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Strike DD — Mission Control</title>
+  <title>Mission Control — Workboard</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --bg2: #111a2f;
-      --card: #131f38;
-      --line: #2a3d66;
-      --text: #ecf2ff;
-      --muted: #9db0d6;
-      --accent: #6db8ff;
-      --ok: #67e2a8;
-      --warn: #ffd172;
-      --danger: #ff7f9e;
+      --bg: #080b12;
+      --bg-2: #101726;
+      --card: #121d31;
+      --line: #263650;
+      --line-soft: #1d2a42;
+      --text: #ecf1ff;
+      --muted: #9cafce;
+      --accent: #73b8ff;
+      --ok: #71e7ad;
+      --warn: #ffd57d;
+      --danger: #ff8baa;
       --radius: 14px;
+      --shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
     }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
       color: var(--text);
-      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+      font: 14px/1.45 Inter, ui-sans-serif, -apple-system, Segoe UI, Roboto, sans-serif;
       background:
-        radial-gradient(800px 500px at 0% -10%, #22457f80, transparent 65%),
-        radial-gradient(700px 500px at 110% -5%, #50348a78, transparent 65%),
+        radial-gradient(900px 500px at 0% -15%, #21487f66, transparent 60%),
+        radial-gradient(700px 420px at 110% -10%, #6939b255, transparent 65%),
         var(--bg);
     }
-    .wrap { max-width: 1200px; margin: 20px auto; padding: 0 14px 24px; display: grid; gap: 14px; }
-    .bar, .card {
+
+    .wrap { max-width: 1380px; margin: 18px auto 26px; padding: 0 14px; display: grid; gap: 14px; }
+
+    .card {
       border: 1px solid var(--line);
-      background: linear-gradient(180deg, var(--card), var(--bg2));
       border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--card), var(--bg-2));
+      box-shadow: var(--shadow);
     }
-    .bar { padding: 14px; display: grid; gap: 8px; }
+
+    .topbar { padding: 14px; display: grid; gap: 10px; }
+    .title { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
     h1 { margin: 0; font-size: clamp(22px, 4vw, 34px); }
     .sub { margin: 0; color: var(--muted); }
-    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    .pill { border: 1px solid #3b5789; border-radius: 999px; padding: 5px 10px; font-size: 12px; color: #dce8ff; background: #1a2948; }
 
-    .grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; }
-    .card { padding: 12px; min-width: 0; }
-    .card h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    .stats, .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      border: 1px solid #3b5275;
+      background: #172742;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #d8e6ff;
+    }
 
-    .list { display: grid; gap: 8px; }
-    .item {
-      border: 1px solid #304a78;
-      background: #13213d;
+    .btn {
+      border: 1px solid #3b5782;
+      background: #172a4b;
+      color: var(--text);
       border-radius: 10px;
-      padding: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn:hover { border-color: #83c4ff; }
+    .btn.primary { background: #1f4675; border-color: #83c4ff; }
+    .btn.warn { background: #4f3a1d; border-color: #9c6d1d; }
+
+    .layout { display: grid; gap: 14px; grid-template-columns: 1.45fr .95fr; }
+
+    .board-wrap { padding: 12px; }
+    .board-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+    h2, h3 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+
+    .board { display: grid; gap: 10px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .lane {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: #0f1a2f;
+      min-height: 180px;
+      padding: 8px;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+    }
+    .lane h4 { margin: 0; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #c8dcff; }
+
+    .task {
+      border: 1px solid #2a4063;
+      background: #15253f;
+      border-radius: 9px;
+      padding: 8px;
+      cursor: pointer;
       display: grid;
       gap: 4px;
     }
-    .top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
-    .name { font-weight: 600; }
-    .meta { color: var(--muted); font-size: 12px; }
-    .tag { border-radius: 999px; padding: 2px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; border: 1px solid #3c598b; background: #1b2f53; }
-    .doing { border-color: #2f6d59; background: #16362f; color: #c9ffea; }
-    .ready { border-color: #42669f; background: #1b3157; color: #d9e9ff; }
-    .blocked { border-color: #7d4f66; background: #3b2230; color: #ffd8e5; }
+    .task:hover { border-color: #7ebaff; }
+    .task.active { border-color: #9ed0ff; box-shadow: 0 0 0 1px #9ed0ff44 inset; }
+    .task-title { font-weight: 600; font-size: 13px; }
+    .task-meta { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
 
-    .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-    button {
-      border: 1px solid #3d5d92;
-      background: #1a2e53;
+    .panel { padding: 12px; display: grid; gap: 12px; align-content: start; }
+    .panel-section { border: 1px solid var(--line-soft); border-radius: 10px; padding: 10px; background: #101c32; display: grid; gap: 8px; }
+
+    label { font-size: 12px; color: #c4d9ff; display: grid; gap: 4px; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid #39557e;
+      border-radius: 8px;
+      background: #0d1930;
       color: var(--text);
-      border-radius: 999px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 12px;
+      padding: 8px;
+      font: inherit;
     }
-    button.active { border-color: #87ccff; background: #214073; }
+    textarea { min-height: 84px; resize: vertical; }
+
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .danger { color: #ffd9e4; background: #3a2230; border-color: #7a4c63; }
+    .ok { color: #d8ffe9; background: #18362f; border-color: #2d6d57; }
+    .muted { color: var(--muted); }
 
     .prompt-box {
-      border: 1px solid #365583;
-      border-radius: 10px;
-      background: #111e36;
-      padding: 10px;
-      min-height: 220px;
       white-space: pre-wrap;
+      border: 1px solid #35527b;
+      border-radius: 8px;
+      background: #0f1d35;
+      padding: 10px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12px;
-      line-height: 1.5;
+      min-height: 150px;
     }
-    .prompt-actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .empty { color: var(--muted); font-size: 13px; }
+    .checklist { display: grid; gap: 6px; font-size: 13px; }
+    .checklist label { display: flex; gap: 8px; align-items: center; }
 
-    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    .feed { display: grid; gap: 7px; max-height: 220px; overflow: auto; }
+    .feed-item { border: 1px solid #2b4065; border-radius: 8px; padding: 8px; background: #14243f; }
+    .feed-item .meta { color: var(--muted); font-size: 12px; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #01040acc;
+      padding: 14px;
+    }
+    .modal.show { display: flex; }
+    .modal-card { width: min(560px, 100%); }
+
+    .empty { color: var(--muted); font-size: 13px; border: 1px dashed #2f4364; border-radius: 8px; padding: 9px; }
+
+    @media (max-width: 1120px) {
+      .layout { grid-template-columns: 1fr; }
+      .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 680px) {
+      .board { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="bar">
-      <h1 id="heroTitle">Mission Control</h1>
-      <p class="sub" id="heroSub">Loading…</p>
-      <div class="row">
-        <span class="pill" id="nowClock">--:--</span>
-        <span class="pill" id="attentionCount">Attention: 0</span>
-        <span class="pill" id="blockedCount">Blocked: 0</span>
+  <main class="wrap">
+    <section class="card topbar">
+      <div class="title">
+        <h1 id="heroTitle">Mission Control</h1>
+        <span class="pill" id="clock">--:--</span>
       </div>
+      <p class="sub" id="heroSub">Loading workspace…</p>
+      <div class="stats" id="stats"></div>
+      <div class="actions">
+        <button class="btn primary" id="addTaskBtn">Add task</button>
+        <button class="btn" id="copyPromptBtn">Copy execution brief</button>
+        <button class="btn" id="exportBtn">Export board JSON</button>
+        <button class="btn" id="importBtn">Import board JSON</button>
+        <button class="btn warn" id="resetBtn">Reset to baseline</button>
+      </div>
+      <input id="importInput" type="file" accept="application/json" style="display:none" />
     </section>
 
-    <section class="grid">
-      <article class="card">
-        <h2>What needs attention now</h2>
-        <div class="controls">
-          <button data-filter="all" class="active">All</button>
-          <button data-filter="urgent">Urgent only</button>
+    <section class="layout">
+      <article class="card board-wrap">
+        <div class="board-head">
+          <h2>Workboard</h2>
+          <span class="muted" id="boardMeta">No task selected</span>
         </div>
-        <div id="tasks" class="list"></div>
+        <div class="board" id="board"></div>
       </article>
 
-      <article class="card">
-        <h2>Execution prompt (copy/paste)</h2>
-        <div class="controls">
-          <button data-prompt="90">Next 90 minutes</button>
-          <button data-prompt="s1">Sprint 1 (core fixes)</button>
-          <button data-prompt="s2">Sprint 2 (flow integrity)</button>
-        </div>
-        <div id="prompt" class="prompt-box">Loading prompt…</div>
-        <div class="prompt-actions">
-          <button id="copyPrompt">Copy prompt</button>
-          <button id="refreshPrompt">Regenerate</button>
-        </div>
-      </article>
-    </section>
+      <aside class="card panel">
+        <section class="panel-section">
+          <h3>Task details</h3>
+          <div id="taskEmpty" class="empty">Select a task card to edit details and move status.</div>
+          <div id="taskEditor" style="display:none; gap:8px;">
+            <label>Title<input id="taskTitle" /></label>
+            <label>Description<textarea id="taskDescription"></textarea></label>
+            <div class="row">
+              <label style="flex:1">Status
+                <select id="taskStatus">
+                  <option value="now">Now</option>
+                  <option value="next">Next</option>
+                  <option value="blocked">Blocked</option>
+                  <option value="done">Done</option>
+                </select>
+              </label>
+              <label style="flex:1">Priority (1 = highest)<input id="taskPriority" type="number" min="1" max="99" /></label>
+            </div>
+            <label>Link (optional)<input id="taskLink" placeholder="https://..." /></label>
+            <label>Owner<input id="taskOwner" placeholder="who should do this" /></label>
+            <label>Definition of done<textarea id="taskDoD" placeholder="One checklist item per line"></textarea></label>
+            <div class="row">
+              <button class="btn ok" id="saveTaskBtn">Save task</button>
+              <button class="btn" id="openTaskLinkBtn">Open link</button>
+              <button class="btn danger" id="deleteTaskBtn">Delete</button>
+            </div>
+          </div>
+        </section>
 
-    <section class="grid">
-      <article class="card">
-        <h2>Blocked + next action</h2>
-        <div id="blocked" class="list"></div>
-      </article>
-      <article class="card">
-        <h2>Recent signal</h2>
-        <div id="feed" class="list"></div>
-      </article>
+        <section class="panel-section">
+          <h3>Execution brief</h3>
+          <div class="prompt-box" id="prompt"></div>
+        </section>
+
+        <section class="panel-section">
+          <h3>Validation criteria</h3>
+          <div class="checklist" id="criteria"></div>
+        </section>
+
+        <section class="panel-section">
+          <h3>Heartbeat loop</h3>
+          <div class="muted" id="heartbeatSummary">No loop status yet.</div>
+        </section>
+
+        <section class="panel-section">
+          <h3>Recent updates</h3>
+          <div class="row">
+            <input id="feedInput" placeholder="Add a progress note" style="flex:1" />
+            <button class="btn" id="feedAddBtn">Add</button>
+          </div>
+          <div class="feed" id="feed"></div>
+        </section>
+      </aside>
     </section>
+  </main>
+
+  <div class="modal" id="taskModal">
+    <div class="card panel modal-card">
+      <h3>Create task</h3>
+      <label>Title<input id="newTaskTitle" /></label>
+      <label>Description<textarea id="newTaskDescription"></textarea></label>
+      <div class="row">
+        <label style="flex:1">Status
+          <select id="newTaskStatus">
+            <option value="now">Now</option>
+            <option value="next">Next</option>
+            <option value="blocked">Blocked</option>
+            <option value="done">Done</option>
+          </select>
+        </label>
+        <label style="flex:1">Priority<input id="newTaskPriority" type="number" min="1" max="99" value="5" /></label>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="createTaskConfirmBtn">Create</button>
+        <button class="btn" id="createTaskCancelBtn">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    const el = (id) => document.getElementById(id);
-    const state = { data: null, filter: 'all', promptMode: '90' };
+    const STORAGE_KEY = 'mc:state:v3';
+    const LANES = ['now', 'next', 'blocked', 'done'];
+    const LANE_LABEL = { now: 'Now', next: 'Next', blocked: 'Blocked', done: 'Done' };
 
-    async function load() {
-      try {
-        const res = await fetch('state.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed state');
-        const data = await res.json();
-        state.data = normalize(data || {});
-      } catch {
-        state.data = normalize({ heroTitle: 'Mission Control', heroSub: 'Fallback mode', tasks: [], feed: [] });
-      }
-      render();
+    const qs = (id) => document.getElementById(id);
+
+    const app = {
+      baseline: null,
+      state: null,
+      selectedTaskId: null,
+      heartbeatChecklist: [
+        'Scope stays on making Mission Control genuinely useful for daily execution.',
+        'Every clickable control must produce a visible state change.',
+        'Execution brief is updated from the real board state.',
+        'Top blocker has a concrete next action.',
+        'Release only after quick smoke test passes.'
+      ]
+    };
+
+    function nowClock() {
+      qs('clock').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    function normalize(d) {
+    function createDefaultState(raw = {}) {
+      const tasks = Array.isArray(raw.tasks) ? raw.tasks : [];
       return {
-        heroTitle: d.heroTitle || 'Mission Control',
-        heroSub: d.heroSub || 'Execution-first view',
-        tasks: Array.isArray(d.tasks) ? d.tasks : [],
-        feed: Array.isArray(d.feed) ? d.feed : []
+        heroTitle: raw.heroTitle || 'Mission Control',
+        heroSub: raw.heroSub || 'Execution board',
+        validationCriteria: Array.isArray(raw.validationCriteria) ? raw.validationCriteria : [
+          'Top priorities are obvious in under 10 seconds.',
+          'Every task has owner + next action + definition of done.',
+          'Blockers are visible and actionable.',
+          'Execution brief can be copied and used immediately.',
+          'Board updates persist after refresh.'
+        ],
+        tasks: tasks.map(normalizeTask),
+        feed: Array.isArray(raw.feed) ? raw.feed.slice(0, 30).map(normalizeFeed) : []
       };
     }
 
-    function priority(s) {
-      return s === 'doing' ? 0 : s === 'blocked' ? 1 : s === 'ready' ? 2 : 9;
+    function normalizeTask(t = {}) {
+      return {
+        id: t.id || cryptoRandom(),
+        title: t.title || t.name || 'Untitled task',
+        description: t.description || t.meta || '',
+        status: LANES.includes(t.status) ? t.status : 'next',
+        priority: Number.isFinite(Number(t.priority)) ? Number(t.priority) : 5,
+        owner: t.owner || '',
+        link: t.link || '',
+        definitionOfDone: Array.isArray(t.definitionOfDone)
+          ? t.definitionOfDone
+          : String(t.definitionOfDone || '').split('\n').map((s) => s.trim()).filter(Boolean),
+      };
+    }
+
+    function normalizeFeed(f = {}) {
+      return {
+        id: f.id || cryptoRandom(),
+        text: String(f.text || '').trim() || 'Update',
+        time: f.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        level: f.level || 'info'
+      };
+    }
+
+    function cryptoRandom() {
+      return Math.random().toString(36).slice(2, 10);
+    }
+
+    async function loadBaseline() {
+      try {
+        const res = await fetch('state.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('State load failed');
+        return await res.json();
+      } catch {
+        return {};
+      }
+    }
+
+    function loadPersisted() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(app.state));
+    }
+
+    function getTaskById(id) {
+      return app.state.tasks.find((t) => t.id === id) || null;
+    }
+
+    function sortedTasks(status) {
+      return app.state.tasks
+        .filter((t) => t.status === status)
+        .sort((a, b) => a.priority - b.priority || a.title.localeCompare(b.title));
+    }
+
+    function renderBoard() {
+      const board = qs('board');
+      board.innerHTML = LANES.map((lane) => {
+        const tasks = sortedTasks(lane);
+        const cards = tasks.length
+          ? tasks.map((t) => {
+              const active = t.id === app.selectedTaskId ? 'active' : '';
+              return `<button class="task ${active}" data-task-id="${escapeHtml(t.id)}">
+                <span class="task-title">${escapeHtml(t.title)}</span>
+                <span class="task-meta">
+                  <span>P${escapeHtml(String(t.priority))}</span>
+                  <span>${escapeHtml(t.owner || 'unassigned')}</span>
+                </span>
+              </button>`;
+            }).join('')
+          : '<div class="empty">No tasks</div>';
+        return `<section class="lane">
+          <h4>${LANE_LABEL[lane]} (${tasks.length})</h4>
+          ${cards}
+        </section>`;
+      }).join('');
+
+      board.querySelectorAll('[data-task-id]').forEach((el) => {
+        el.addEventListener('click', () => {
+          app.selectedTaskId = el.getAttribute('data-task-id');
+          render();
+        });
+      });
+    }
+
+    function renderStats() {
+      const count = Object.fromEntries(LANES.map((lane) => [lane, sortedTasks(lane).length]));
+      qs('stats').innerHTML = [
+        `<span class="pill">Now: ${count.now}</span>`,
+        `<span class="pill">Next: ${count.next}</span>`,
+        `<span class="pill">Blocked: ${count.blocked}</span>`,
+        `<span class="pill">Done: ${count.done}</span>`,
+      ].join('');
+      qs('heroTitle').textContent = app.state.heroTitle;
+      qs('heroSub').textContent = app.state.heroSub;
+      qs('boardMeta').textContent = app.selectedTaskId ? `Editing ${getTaskById(app.selectedTaskId)?.title || 'task'}` : 'No task selected';
+    }
+
+    function renderTaskEditor() {
+      const task = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
+      const empty = qs('taskEmpty');
+      const editor = qs('taskEditor');
+      if (!task) {
+        empty.style.display = 'block';
+        editor.style.display = 'none';
+        return;
+      }
+
+      empty.style.display = 'none';
+      editor.style.display = 'grid';
+      qs('taskTitle').value = task.title;
+      qs('taskDescription').value = task.description;
+      qs('taskStatus').value = task.status;
+      qs('taskPriority').value = String(task.priority);
+      qs('taskLink').value = task.link || '';
+      qs('taskOwner').value = task.owner || '';
+      qs('taskDoD').value = task.definitionOfDone.join('\n');
+    }
+
+    function buildExecutionBrief() {
+      const now = sortedTasks('now').slice(0, 5);
+      const next = sortedTasks('next').slice(0, 4);
+      const blocked = sortedTasks('blocked').slice(0, 4);
+
+      const fmt = (arr) => arr.length ? arr.map((t, i) => `${i + 1}. ${t.title} (P${t.priority})`).join('\n') : 'None';
+
+      return [
+        'Mission Control — execution brief',
+        '',
+        'Do now:',
+        fmt(now),
+        '',
+        'Queue next:',
+        fmt(next),
+        '',
+        'Blockers to clear first:',
+        blocked.length ? blocked.map((t, i) => `${i + 1}. ${t.title} -> ${t.description || 'add concrete unblock action'}`).join('\n') : 'None',
+        '',
+        'Required report format:',
+        '- shipped changes',
+        '- validation evidence',
+        '- blockers that remain',
+        '- exact next action',
+      ].join('\n');
+    }
+
+    function renderPrompt() {
+      qs('prompt').textContent = buildExecutionBrief();
+    }
+
+    function renderCriteria() {
+      qs('criteria').innerHTML = app.state.validationCriteria.map((c, idx) => (
+        `<label><input type="checkbox" data-criteria-index="${idx}"/> ${escapeHtml(c)}</label>`
+      )).join('') + '<div class="muted">(Checklist state is session-only.)</div>';
+    }
+
+    function renderHeartbeat() {
+      const blockers = sortedTasks('blocked');
+      const topBlocker = blockers[0];
+      const summary = [
+        `Loop standard: ${app.heartbeatChecklist.length} checks every heartbeat.`,
+        topBlocker ? `Top blocker: ${topBlocker.title}. Next action: ${topBlocker.description || 'Define unblock step.'}` : 'No blockers. Move next item from queue into Now.',
+      ].join(' ');
+      qs('heartbeatSummary').textContent = summary;
+    }
+
+    function renderFeed() {
+      const feed = app.state.feed.slice().reverse();
+      qs('feed').innerHTML = feed.length
+        ? feed.map((f) => `<div class="feed-item"><div>${escapeHtml(f.text)}</div><div class="meta">${escapeHtml(f.time)} · ${escapeHtml(f.level)}</div></div>`).join('')
+        : '<div class="empty">No updates yet.</div>';
     }
 
     function render() {
-      const d = state.data;
-      el('heroTitle').textContent = d.heroTitle;
-      el('heroSub').textContent = d.heroSub;
-
-      const tasks = d.tasks.slice().sort((a,b) => priority(a.status) - priority(b.status));
-      const urgent = tasks.filter(t => t.status === 'doing' || t.status === 'blocked');
-      const blocked = tasks.filter(t => t.status === 'blocked');
-
-      el('attentionCount').textContent = `Attention: ${urgent.length}`;
-      el('blockedCount').textContent = `Blocked: ${blocked.length}`;
-
-      const visible = state.filter === 'urgent' ? urgent : tasks;
-      el('tasks').innerHTML = visible.length ? visible.map(taskCard).join('') : '<div class="empty">No tasks in this view.</div>';
-      el('blocked').innerHTML = blocked.length ? blocked.map(taskCard).join('') : '<div class="empty">No blockers right now.</div>';
-
-      const feed = d.feed.slice(0, 6);
-      el('feed').innerHTML = feed.length
-        ? feed.map(f => `<div class="item"><div class="name">${esc(f.text || '')}</div><div class="meta">${esc(f.time || '')} · ${esc(f.level || 'all')}</div></div>`).join('')
-        : '<div class="empty">No recent feed items.</div>';
-
-      el('prompt').textContent = buildPrompt(tasks, blocked);
-      document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === state.filter));
+      renderStats();
+      renderBoard();
+      renderTaskEditor();
+      renderPrompt();
+      renderCriteria();
+      renderHeartbeat();
+      renderFeed();
     }
 
-    function taskCard(t) {
-      const status = esc(t.status || 'ready');
-      return `<div class="item">
-        <div class="top"><span class="name">${esc(t.name || 'Untitled task')}</span><span class="tag ${status}">${status}</span></div>
-        <div class="meta">${esc(t.meta || '')}</div>
-      </div>`;
+    function saveCurrentTask() {
+      const task = getTaskById(app.selectedTaskId);
+      if (!task) return;
+      task.title = qs('taskTitle').value.trim() || 'Untitled task';
+      task.description = qs('taskDescription').value.trim();
+      task.status = qs('taskStatus').value;
+      task.priority = Math.max(1, Math.min(99, Number(qs('taskPriority').value) || 5));
+      task.link = qs('taskLink').value.trim();
+      task.owner = qs('taskOwner').value.trim();
+      task.definitionOfDone = qs('taskDoD').value.split('\n').map((s) => s.trim()).filter(Boolean);
+      addFeed('Task updated: ' + task.title, 'change');
+      persist();
+      render();
     }
 
-    function buildPrompt(tasks, blocked) {
-      const top = tasks.slice(0, 5).map((t, i) => `${i+1}. ${t.name} (${t.status})`).join('\n') || '1. No prioritized tasks found';
-      const blockers = blocked.map((b, i) => `${i+1}. ${b.name} — ${b.meta || 'Needs clarification'}`).join('\n') || 'None';
-
-      const sprint1 = `You are implementing Sprint 1 only.\n\nGoals:\n1) Fix decision-gate parity at generate-time.\n2) Return machine-readable promotion-in-progress conflicts and wire frontend resume.\n\nTop priorities from board:\n${top}\n\nBlockers:\n${blockers}\n\nRequired output:\n- concise changelog\n- files changed\n- tests run + results\n- remaining blockers\n- commit hash`;
-
-      const sprint2 = `You are implementing Sprint 2 only.\n\nGoals:\n1) Unify Promote-to-V1 entry with canonical promotion flow.\n2) Preserve deep-link/version continuity across V∞/V1 routes.\n3) Enforce sequential evolution step transitions server-side.\n\nContext priorities:\n${top}\n\nDeliverable:\n- end-to-end flow notes\n- regression tests\n- commit hash`;
-
-      const next90 = `Execute the next 90-minute block.\n\nDo this now:\n${top}\n\nFocus rules:\n- highest risk first\n- no unrelated refactors\n- verify with tests before reporting\n\nBlockers to resolve early:\n${blockers}\n\nDeliver in one response:\n- what shipped\n- what failed\n- exact next action`;
-
-      return state.promptMode === 's1' ? sprint1 : state.promptMode === 's2' ? sprint2 : next90;
+    function addFeed(text, level = 'info') {
+      app.state.feed.push(normalizeFeed({ text, level }));
+      app.state.feed = app.state.feed.slice(-30);
     }
 
-    function esc(s) {
-      return String(s)
+    function downloadJson(filename, data) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(input) {
+      return String(input)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -224,24 +543,114 @@
         .replace(/'/g, '&#39;');
     }
 
-    document.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', () => { state.filter = btn.dataset.filter; render(); }));
-    document.querySelectorAll('[data-prompt]').forEach(btn => btn.addEventListener('click', () => { state.promptMode = btn.dataset.prompt; render(); }));
+    function wireActions() {
+      qs('addTaskBtn').addEventListener('click', () => qs('taskModal').classList.add('show'));
+      qs('createTaskCancelBtn').addEventListener('click', () => qs('taskModal').classList.remove('show'));
 
-    el('copyPrompt').addEventListener('click', async () => {
-      const text = el('prompt').textContent;
-      try { await navigator.clipboard.writeText(text); el('copyPrompt').textContent = 'Copied'; setTimeout(() => el('copyPrompt').textContent = 'Copy prompt', 1000); }
-      catch { el('copyPrompt').textContent = 'Copy failed'; setTimeout(() => el('copyPrompt').textContent = 'Copy prompt', 1200); }
-    });
+      qs('createTaskConfirmBtn').addEventListener('click', () => {
+        const title = qs('newTaskTitle').value.trim();
+        if (!title) return;
+        const task = normalizeTask({
+          title,
+          description: qs('newTaskDescription').value.trim(),
+          status: qs('newTaskStatus').value,
+          priority: Number(qs('newTaskPriority').value) || 5,
+        });
+        app.state.tasks.push(task);
+        app.selectedTaskId = task.id;
+        addFeed('Task created: ' + task.title, 'change');
+        persist();
+        qs('taskModal').classList.remove('show');
+        qs('newTaskTitle').value = '';
+        qs('newTaskDescription').value = '';
+        render();
+      });
 
-    el('refreshPrompt').addEventListener('click', () => render());
+      qs('saveTaskBtn').addEventListener('click', saveCurrentTask);
 
-    function tickClock() {
-      el('nowClock').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      qs('deleteTaskBtn').addEventListener('click', () => {
+        const task = getTaskById(app.selectedTaskId);
+        if (!task) return;
+        if (!confirm(`Delete task "${task.title}"?`)) return;
+        app.state.tasks = app.state.tasks.filter((t) => t.id !== task.id);
+        app.selectedTaskId = null;
+        addFeed('Task deleted: ' + task.title, 'change');
+        persist();
+        render();
+      });
+
+      qs('openTaskLinkBtn').addEventListener('click', () => {
+        const task = getTaskById(app.selectedTaskId);
+        if (!task?.link) return;
+        window.open(task.link, '_blank', 'noopener');
+      });
+
+      qs('copyPromptBtn').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(qs('prompt').textContent);
+          qs('copyPromptBtn').textContent = 'Copied';
+          setTimeout(() => qs('copyPromptBtn').textContent = 'Copy execution brief', 1000);
+        } catch {
+          qs('copyPromptBtn').textContent = 'Copy failed';
+          setTimeout(() => qs('copyPromptBtn').textContent = 'Copy execution brief', 1200);
+        }
+      });
+
+      qs('exportBtn').addEventListener('click', () => {
+        downloadJson('mission-control-board.json', app.state);
+      });
+
+      qs('importBtn').addEventListener('click', () => qs('importInput').click());
+      qs('importInput').addEventListener('change', async (evt) => {
+        const file = evt.target.files?.[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          app.state = createDefaultState(parsed);
+          app.selectedTaskId = app.state.tasks[0]?.id || null;
+          addFeed('Board imported from JSON', 'change');
+          persist();
+          render();
+        } catch {
+          alert('Import failed. Please use a valid JSON export from this board.');
+        }
+      });
+
+      qs('resetBtn').addEventListener('click', () => {
+        if (!confirm('Reset board to baseline state.json?')) return;
+        app.state = createDefaultState(app.baseline);
+        app.selectedTaskId = app.state.tasks[0]?.id || null;
+        addFeed('Board reset to baseline', 'change');
+        persist();
+        render();
+      });
+
+      qs('feedAddBtn').addEventListener('click', () => {
+        const text = qs('feedInput').value.trim();
+        if (!text) return;
+        addFeed(text, 'note');
+        qs('feedInput').value = '';
+        persist();
+        render();
+      });
     }
-    tickClock();
-    setInterval(tickClock, 1000);
 
-    load();
+    async function init() {
+      nowClock();
+      setInterval(nowClock, 1000);
+
+      app.baseline = await loadBaseline();
+      const baseState = createDefaultState(app.baseline);
+      const persisted = loadPersisted();
+      app.state = persisted ? createDefaultState(persisted) : baseState;
+      app.selectedTaskId = app.state.tasks[0]?.id || null;
+
+      wireActions();
+      render();
+    }
+
+    init();
   </script>
 </body>
 </html>
