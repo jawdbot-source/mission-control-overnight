@@ -47,6 +47,33 @@
     .sub { margin: 0; color: var(--muted); }
 
     .stats, .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .ia-map {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .ia-step {
+      border: 1px solid #36507a;
+      background: #11213a;
+      border-radius: 10px;
+      padding: 8px;
+      display: grid;
+      gap: 4px;
+      align-content: start;
+      min-height: 74px;
+    }
+    .ia-step strong { font-size: 12px; letter-spacing: .02em; }
+    .ia-step .k {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #6db3ff;
+      color: #cfe6ff;
+      font-size: 11px;
+      display: grid;
+      place-items: center;
+    }
     .pill {
       border: 1px solid #3b5275;
       background: #172742;
@@ -157,10 +184,12 @@
     @media (max-width: 1120px) {
       .layout { grid-template-columns: 1fr; }
       .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ia-map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 680px) {
       .board { grid-template-columns: 1fr; }
+      .ia-map { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -172,6 +201,28 @@
         <span class="pill" id="clock">--:--</span>
       </div>
       <p class="sub" id="heroSub">Loading workspace…</p>
+      <div class="ia-map" aria-label="10-second workflow map">
+        <div class="ia-step">
+          <span class="k">1</span>
+          <strong>Scan lanes</strong>
+          <span class="muted" id="iaNow">Pick the top Now task.</span>
+        </div>
+        <div class="ia-step">
+          <span class="k">2</span>
+          <strong>Edit task</strong>
+          <span class="muted">Click a card to open Task details.</span>
+        </div>
+        <div class="ia-step">
+          <span class="k">3</span>
+          <strong>Move flow</strong>
+          <span class="muted" id="iaBlocker">Clear blockers before pulling Next.</span>
+        </div>
+        <div class="ia-step">
+          <span class="k">4</span>
+          <strong>Share brief</strong>
+          <span class="muted">Copy execution brief and run.</span>
+        </div>
+      </div>
       <div class="stats" id="stats"></div>
       <div class="actions">
         <button class="btn primary" id="addTaskBtn">Add task</button>
@@ -415,6 +466,13 @@
       qs('heroTitle').textContent = app.state.heroTitle;
       qs('heroSub').textContent = app.state.heroSub;
       qs('boardMeta').textContent = app.selectedTaskId ? `Editing ${getTaskById(app.selectedTaskId)?.title || 'task'}` : 'No task selected';
+
+      const topNow = sortedTasks('now')[0];
+      const topBlocked = sortedTasks('blocked')[0];
+      qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
+      qs('iaBlocker').textContent = topBlocked
+        ? `Top blocker: ${topBlocked.title}`
+        : 'No blockers. Pull next highest-priority task.';
     }
 
     function renderTaskEditor() {
