@@ -119,6 +119,26 @@
     }
     .quick-nav a:hover { border-color: #83c4ff; }
 
+    .start-strip {
+      border: 1px solid #38557f;
+      background: #11233f;
+      border-radius: 10px;
+      padding: 9px 10px;
+      display: grid;
+      gap: 7px;
+    }
+    .start-strip strong {
+      font-size: 12px;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      color: #d9e9ff;
+    }
+    .start-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .quick-nav a:focus-visible,
     .btn:focus-visible,
     .task:focus-visible,
@@ -305,6 +325,15 @@
         <a href="#strikeDeskSection">Go: Strike desk</a>
         <a href="#updatesSection">Go: Recent updates</a>
       </nav>
+      <section class="start-strip" aria-label="Mission Control start here">
+        <strong>Start here</strong>
+        <span class="muted" id="startCue">Loading top action…</span>
+        <div class="start-actions">
+          <button class="btn" id="focusNowBtn">Focus top Now</button>
+          <button class="btn" id="focusBlockedBtn">Focus top Blocked</button>
+          <button class="btn" id="focusNextBtn">Focus top Next</button>
+        </div>
+      </section>
       <div class="stats" id="stats"></div>
       <div class="actions">
         <button class="btn primary" id="addTaskBtn">Add task</button>
@@ -597,11 +626,19 @@
       qs('boardMeta').textContent = app.selectedTaskId ? `Editing ${getTaskById(app.selectedTaskId)?.title || 'task'}` : 'No task selected';
 
       const topNow = sortedTasks('now')[0];
+      const topNext = sortedTasks('next')[0];
       const topBlocked = sortedTasks('blocked')[0];
       qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
       qs('iaBlocker').textContent = topBlocked
         ? `Top blocker: ${topBlocked.title}`
         : 'No blockers. Pull next highest-priority task.';
+      qs('startCue').textContent = topNow
+        ? `Open “${topNow.title}” in Task details, then save or move.`
+        : topBlocked
+          ? `No Now task. Clear blocker “${topBlocked.title}” first.`
+          : topNext
+            ? `No Now task. Promote “${topNext.title}” from Next.`
+            : 'Add a task to begin execution flow.';
     }
 
     function renderTaskEditor() {
@@ -778,6 +815,18 @@
       return true;
     }
 
+    function focusTopTask(status) {
+      const top = sortedTasks(status)[0];
+      if (!top) {
+        flashAction(`No tasks in ${LANE_LABEL[status]} lane.`, 'warn');
+        return;
+      }
+      app.selectedTaskId = top.id;
+      render();
+      qs('taskPanelSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      flashAction(`Focused top ${LANE_LABEL[status]} task.`, 'ok');
+    }
+
     function saveCurrentTask() {
       const task = getTaskById(app.selectedTaskId);
       if (!task) return;
@@ -879,6 +928,10 @@
       qs('moveNextBtn').addEventListener('click', () => moveSelectedTask('next'));
       qs('moveBlockedBtn').addEventListener('click', () => moveSelectedTask('blocked'));
       qs('moveDoneBtn').addEventListener('click', () => moveSelectedTask('done'));
+
+      qs('focusNowBtn').addEventListener('click', () => focusTopTask('now'));
+      qs('focusBlockedBtn').addEventListener('click', () => focusTopTask('blocked'));
+      qs('focusNextBtn').addEventListener('click', () => focusTopTask('next'));
 
       qs('deleteTaskBtn').addEventListener('click', () => {
         const task = getTaskById(app.selectedTaskId);
