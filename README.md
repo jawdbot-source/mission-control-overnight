@@ -14,6 +14,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Persist board changes in browser `localStorage`
 - Reset back to baseline `state.json`
 - **10-second workflow map** at top to orient Plan → Edit → Unblock → Share instantly
+- Action status line confirms control results (save/open/copy/import/export/reset)
 
 ## Files
 

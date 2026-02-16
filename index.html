@@ -48,6 +48,16 @@
 
     .stats, .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
+    .action-notice {
+      min-height: 20px;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 2px 2px 0;
+    }
+    .action-notice[data-level="ok"] { color: var(--ok); }
+    .action-notice[data-level="warn"] { color: var(--warn); }
+    .action-notice[data-level="info"] { color: #b7d8ff; }
+
     .ia-map {
       display: grid;
       gap: 8px;
@@ -231,6 +241,7 @@
         <button class="btn" id="importBtn">Import board JSON</button>
         <button class="btn warn" id="resetBtn">Reset to baseline</button>
       </div>
+      <div class="action-notice" id="actionNotice" data-level="info">Ready.</div>
       <input id="importInput" type="file" accept="application/json" style="display:none" />
     </section>
 
@@ -333,6 +344,7 @@
       baseline: null,
       state: null,
       selectedTaskId: null,
+      actionNoticeTimer: null,
       heartbeatChecklist: [
         'Scope stays on making Mission Control genuinely useful for daily execution.',
         'Every clickable control must produce a visible state change.',
@@ -550,6 +562,18 @@
         : '<div class="empty">No updates yet.</div>';
     }
 
+    function flashAction(text, level = 'info') {
+      const notice = qs('actionNotice');
+      if (!notice) return;
+      notice.textContent = text;
+      notice.dataset.level = level;
+      if (app.actionNoticeTimer) clearTimeout(app.actionNoticeTimer);
+      app.actionNoticeTimer = setTimeout(() => {
+        notice.textContent = 'Ready.';
+        notice.dataset.level = 'info';
+      }, 1800);
+    }
+
     function render() {
       renderStats();
       renderBoard();
@@ -602,8 +626,14 @@
     }
 
     function wireActions() {
-      qs('addTaskBtn').addEventListener('click', () => qs('taskModal').classList.add('show'));
-      qs('createTaskCancelBtn').addEventListener('click', () => qs('taskModal').classList.remove('show'));
+      qs('addTaskBtn').addEventListener('click', () => {
+        qs('taskModal').classList.add('show');
+        flashAction('Create task modal opened.', 'info');
+      });
+      qs('createTaskCancelBtn').addEventListener('click', () => {
+        qs('taskModal').classList.remove('show');
+        flashAction('Task creation canceled.', 'info');
+      });
 
       qs('createTaskConfirmBtn').addEventListener('click', () => {
         const title = qs('newTaskTitle').value.trim();
@@ -619,12 +649,16 @@
         addFeed('Task created: ' + task.title, 'change');
         persist();
         qs('taskModal').classList.remove('show');
+        flashAction('Task created and selected.', 'ok');
         qs('newTaskTitle').value = '';
         qs('newTaskDescription').value = '';
         render();
       });
 
-      qs('saveTaskBtn').addEventListener('click', saveCurrentTask);
+      qs('saveTaskBtn').addEventListener('click', () => {
+        saveCurrentTask();
+        flashAction('Task saved.', 'ok');
+      });
 
       qs('deleteTaskBtn').addEventListener('click', () => {
         const task = getTaskById(app.selectedTaskId);
@@ -635,12 +669,21 @@
         addFeed('Task deleted: ' + task.title, 'change');
         persist();
         render();
+        flashAction('Task deleted.', 'ok');
       });
 
       qs('openTaskLinkBtn').addEventListener('click', () => {
         const task = getTaskById(app.selectedTaskId);
-        if (!task?.link) return;
+        if (!task) {
+          flashAction('Select a task first.', 'warn');
+          return;
+        }
+        if (!task.link) {
+          flashAction('Add a link in task details first.', 'warn');
+          return;
+        }
         window.open(task.link, '_blank', 'noopener');
+        flashAction('Opened task link in a new tab.', 'ok');
       });
 
       qs('copyPromptBtn').addEventListener('click', async () => {
@@ -648,17 +691,23 @@
           await navigator.clipboard.writeText(qs('prompt').textContent);
           qs('copyPromptBtn').textContent = 'Copied';
           setTimeout(() => qs('copyPromptBtn').textContent = 'Copy execution brief', 1000);
+          flashAction('Execution brief copied.', 'ok');
         } catch {
           qs('copyPromptBtn').textContent = 'Copy failed';
           setTimeout(() => qs('copyPromptBtn').textContent = 'Copy execution brief', 1200);
+          flashAction('Copy failed.', 'warn');
         }
       });
 
       qs('exportBtn').addEventListener('click', () => {
         downloadJson('mission-control-board.json', app.state);
+        flashAction('Board JSON exported.', 'ok');
       });
 
-      qs('importBtn').addEventListener('click', () => qs('importInput').click());
+      qs('importBtn').addEventListener('click', () => {
+        qs('importInput').click();
+        flashAction('Select a JSON file to import.', 'info');
+      });
       qs('importInput').addEventListener('change', async (evt) => {
         const file = evt.target.files?.[0];
         if (!file) return;
@@ -670,8 +719,10 @@
           addFeed('Board imported from JSON', 'change');
           persist();
           render();
+          flashAction('Board imported from JSON.', 'ok');
         } catch {
           alert('Import failed. Please use a valid JSON export from this board.');
+          flashAction('Import failed: invalid JSON file.', 'warn');
         }
       });
 
@@ -682,6 +733,7 @@
         addFeed('Board reset to baseline', 'change');
         persist();
         render();
+        flashAction('Board reset to baseline.', 'ok');
       });
 
       qs('feedAddBtn').addEventListener('click', () => {
@@ -691,6 +743,7 @@
         qs('feedInput').value = '';
         persist();
         render();
+        flashAction('Feed update added.', 'ok');
       });
     }
 
