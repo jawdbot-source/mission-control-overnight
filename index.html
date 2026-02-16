@@ -915,7 +915,7 @@
         } catch {
           qs('copyPromptBtn').textContent = 'Copy failed';
           setTimeout(() => qs('copyPromptBtn').textContent = 'Copy execution brief', 1200);
-          flashAction('Copy failed.', 'warn');
+          flashAction('Copy failed. Select the brief and press ⌘C.', 'warn');
         }
       });
 
@@ -992,7 +992,7 @@
           await navigator.clipboard.writeText(buildStrikeBrief());
           flashAction('Strike brief copied.', 'ok');
         } catch {
-          flashAction('Strike brief copy failed.', 'warn');
+          flashAction('Strike brief copy failed. Select text and press ⌘C.', 'warn');
         }
       });
 
