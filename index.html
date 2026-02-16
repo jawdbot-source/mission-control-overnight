@@ -236,6 +236,7 @@
       justify-content: center;
       background: #01040acc;
       padding: 14px;
+      overscroll-behavior: contain;
     }
     .modal.show { display: flex; }
     .modal-card { width: min(560px, 100%); }
@@ -724,6 +725,29 @@
       }, 1800);
     }
 
+    function hasUnsavedTaskChanges() {
+      const task = getTaskById(app.selectedTaskId);
+      const editorVisible = qs('taskEditor')?.style.display === 'grid';
+      if (!task || !editorVisible) return false;
+
+      const currentTitle = (qs('taskTitle')?.value || '').trim() || 'Untitled task';
+      const currentDescription = (qs('taskDescription')?.value || '').trim();
+      const currentStatus = qs('taskStatus')?.value || 'next';
+      const currentPriority = Math.max(1, Math.min(99, Number(qs('taskPriority')?.value) || 5));
+      const currentLink = (qs('taskLink')?.value || '').trim();
+      const currentOwner = (qs('taskOwner')?.value || '').trim();
+      const currentDoD = (qs('taskDoD')?.value || '').split('\n').map((s) => s.trim()).filter(Boolean);
+
+      if (currentTitle !== task.title) return true;
+      if (currentDescription !== task.description) return true;
+      if (currentStatus !== task.status) return true;
+      if (currentPriority !== task.priority) return true;
+      if (currentLink !== task.link) return true;
+      if (currentOwner !== task.owner) return true;
+      if (JSON.stringify(currentDoD) !== JSON.stringify(task.definitionOfDone || [])) return true;
+      return false;
+    }
+
     function render() {
       renderStats();
       renderBoard();
@@ -796,6 +820,20 @@
     }
 
     function wireActions() {
+      window.addEventListener('beforeunload', (evt) => {
+        if (!hasUnsavedTaskChanges()) return;
+        evt.preventDefault();
+        evt.returnValue = '';
+      });
+
+      document.querySelectorAll('.quick-nav a').forEach((link) => {
+        link.addEventListener('click', (evt) => {
+          if (!hasUnsavedTaskChanges()) return;
+          if (confirm('You have unsaved task edits. Continue without saving?')) return;
+          evt.preventDefault();
+        });
+      });
+
       qs('addTaskBtn').addEventListener('click', () => {
         qs('taskModal').classList.add('show');
         flashAction('Create task modal opened.', 'info');
