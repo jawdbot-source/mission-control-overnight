@@ -736,6 +736,8 @@
       const topNext = sortedTasks('next')[0];
       const topBlocked = sortedTasks('blocked')[0];
       const firstAction = topNow || topBlocked || topNext || null;
+      const short = (text, max = 28) => (text && text.length > max ? `${text.slice(0, max - 1)}…` : text || '');
+
       qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
       qs('iaBlocker').textContent = topBlocked
         ? `Top blocker: ${topBlocked.title}`
@@ -750,9 +752,23 @@
 
       const firstActionBtn = qs('focusFirstActionBtn');
       if (firstActionBtn) {
-        firstActionBtn.textContent = firstAction ? `Open: ${firstAction.title}` : 'Open first action';
+        firstActionBtn.textContent = firstAction ? `Open: ${short(firstAction.title)}` : 'Open first action';
         firstActionBtn.disabled = !firstAction;
         firstActionBtn.setAttribute('aria-disabled', firstAction ? 'false' : 'true');
+      }
+
+      const pullBtn = qs('pullNextBtn');
+      if (pullBtn) {
+        pullBtn.textContent = topNext ? `Pull Next → Now: ${short(topNext.title, 24)}` : 'Pull top Next → Now';
+        pullBtn.disabled = !topNext;
+        pullBtn.setAttribute('aria-disabled', topNext ? 'false' : 'true');
+      }
+
+      const unblockBtn = qs('unblockTopBtn');
+      if (unblockBtn) {
+        unblockBtn.textContent = topBlocked ? `Unblock → Next: ${short(topBlocked.title, 22)}` : 'Unblock top Blocked → Next';
+        unblockBtn.disabled = !topBlocked;
+        unblockBtn.setAttribute('aria-disabled', topBlocked ? 'false' : 'true');
       }
 
       qs('pathNow').textContent = topNow ? `Now: ${topNow.title}` : 'Now: none';

@@ -22,7 +22,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Lane color system (Now/Next/Blocked/Done) improves scan speed and visual polish
 - Accessibility baseline: skip link, visible keyboard focus states, aria-live action feedback, reduced-motion support, and dialog semantics for task modal
 - Action status line confirms control results (save/open/copy/import/export/reset)
-- Execution flow controls: pull top Next → Now, unblock top Blocked → Next, and one-click lane moves from task editor
+- Execution flow controls: pull/unblock buttons now show live top task labels, disable when empty, and one-click lane moves from task editor
 - Strike Desk section for Strike coordination (policy guardrail, focus list, notes, copyable strike brief)
 
 ## Files
