@@ -109,7 +109,8 @@
     .layout { display: grid; gap: 14px; grid-template-columns: 1.45fr .95fr; }
 
     .board-wrap { padding: 12px; }
-    .board-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+    .board-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; flex-wrap: wrap; }
+    .board-head-meta { display: grid; gap: 4px; }
     h2, h3 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 
     .board { display: grid; gap: 10px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -248,8 +249,14 @@
     <section class="layout">
       <article class="card board-wrap">
         <div class="board-head">
-          <h2>Workboard</h2>
-          <span class="muted" id="boardMeta">No task selected</span>
+          <div class="board-head-meta">
+            <h2>Workboard</h2>
+            <span class="muted" id="boardMeta">No task selected</span>
+          </div>
+          <div class="row">
+            <button class="btn" id="pullNextBtn">Pull top Next → Now</button>
+            <button class="btn" id="unblockTopBtn">Unblock top Blocked → Next</button>
+          </div>
         </div>
         <div class="board" id="board"></div>
       </article>
@@ -279,6 +286,12 @@
               <button class="btn ok" id="saveTaskBtn">Save task</button>
               <button class="btn" id="openTaskLinkBtn">Open link</button>
               <button class="btn danger" id="deleteTaskBtn">Delete</button>
+            </div>
+            <div class="row">
+              <button class="btn" id="moveNowBtn">Move to Now</button>
+              <button class="btn" id="moveNextBtn">Move to Next</button>
+              <button class="btn warn" id="moveBlockedBtn">Move to Blocked</button>
+              <button class="btn ok" id="moveDoneBtn">Move to Done</button>
             </div>
           </div>
         </section>
@@ -584,6 +597,25 @@
       renderFeed();
     }
 
+    function moveSelectedTask(status) {
+      const task = getTaskById(app.selectedTaskId);
+      if (!task) {
+        flashAction('Select a task first.', 'warn');
+        return false;
+      }
+      if (!LANES.includes(status)) return false;
+      if (task.status === status) {
+        flashAction(`Task already in ${LANE_LABEL[status]}.`, 'info');
+        return false;
+      }
+      task.status = status;
+      addFeed(`Task moved to ${LANE_LABEL[status]}: ${task.title}`, 'change');
+      persist();
+      render();
+      flashAction(`Moved task to ${LANE_LABEL[status]}.`, 'ok');
+      return true;
+    }
+
     function saveCurrentTask() {
       const task = getTaskById(app.selectedTaskId);
       if (!task) return;
@@ -660,6 +692,11 @@
         flashAction('Task saved.', 'ok');
       });
 
+      qs('moveNowBtn').addEventListener('click', () => moveSelectedTask('now'));
+      qs('moveNextBtn').addEventListener('click', () => moveSelectedTask('next'));
+      qs('moveBlockedBtn').addEventListener('click', () => moveSelectedTask('blocked'));
+      qs('moveDoneBtn').addEventListener('click', () => moveSelectedTask('done'));
+
       qs('deleteTaskBtn').addEventListener('click', () => {
         const task = getTaskById(app.selectedTaskId);
         if (!task) return;
@@ -734,6 +771,26 @@
         persist();
         render();
         flashAction('Board reset to baseline.', 'ok');
+      });
+
+      qs('pullNextBtn').addEventListener('click', () => {
+        const nextTask = sortedTasks('next')[0];
+        if (!nextTask) {
+          flashAction('No tasks in Next lane.', 'warn');
+          return;
+        }
+        app.selectedTaskId = nextTask.id;
+        moveSelectedTask('now');
+      });
+
+      qs('unblockTopBtn').addEventListener('click', () => {
+        const blockedTask = sortedTasks('blocked')[0];
+        if (!blockedTask) {
+          flashAction('No tasks in Blocked lane.', 'warn');
+          return;
+        }
+        app.selectedTaskId = blockedTask.id;
+        moveSelectedTask('next');
       });
 
       qs('feedAddBtn').addEventListener('click', () => {
