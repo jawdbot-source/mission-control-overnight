@@ -1,0 +1,53 @@
+{
+  "heroTitle": "Strike DD Mission Control",
+  "heroSub": "Execution board for Strike DD only — no agent-side meta work.",
+  "tasks": [
+    {
+      "name": "p0-auth-hardfail-prod-jwt-verify",
+      "meta": "Harden JWT verification path in prod auth flow",
+      "status": "doing"
+    },
+    {
+      "name": "vc-v0-decision-kill-advance-v1",
+      "meta": "Align decision gate and promote-to-V1 flow semantics",
+      "status": "doing"
+    },
+    {
+      "name": "pipeline-reconstruction-harden",
+      "meta": "Stabilize reconstruction pipeline and failure recovery",
+      "status": "ready"
+    },
+    {
+      "name": "evolution-analysis-qa-correctness",
+      "meta": "Validate analysis→QA correctness and edge-state behavior",
+      "status": "ready"
+    },
+    {
+      "name": "sec-decisions-update-bind-deal",
+      "meta": "Decision/deal binding updates are blocked on contract confirmation",
+      "status": "blocked"
+    }
+  ],
+  "feed": [
+    {
+      "text": "Priority confirmed: run Sprint 1 first (decision-gate parity + machine-readable promotion conflict resume).",
+      "time": "now",
+      "level": "critical"
+    },
+    {
+      "text": "Mission Control hard reset shipped; next quality bar is usefulness and Strike-DD-only context.",
+      "time": "now",
+      "level": "important"
+    },
+    {
+      "text": "Security warning for auth rate limiting has been remediated; follow-up is service/runtime hardening.",
+      "time": "today",
+      "level": "important"
+    },
+    {
+      "text": "Open item: finalize cron cleanup so only high-signal platform updates remain.",
+      "time": "today",
+      "level": "all"
+    }
+  ]
+}
