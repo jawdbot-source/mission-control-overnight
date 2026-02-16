@@ -19,6 +19,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Mission-path strip shows the live top Now/Blocked/Next tasks in one glance
 - Lane guide explains Now/Next/Blocked/Done semantics at a glance directly above the board
 - Lane highlight flash gives immediate visual confirmation when tasks are saved/moved
+- Lane color system (Now/Next/Blocked/Done) improves scan speed and visual polish
 - Accessibility baseline: skip link, visible keyboard focus states, aria-live action feedback, reduced-motion support, and dialog semantics for task modal
 - Action status line confirms control results (save/open/copy/import/export/reset)
 - Execution flow controls: pull top Next → Now, unblock top Blocked → Next, and one-click lane moves from task editor

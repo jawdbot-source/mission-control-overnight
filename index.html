@@ -236,18 +236,48 @@
     .lane {
       border: 1px solid var(--line-soft);
       border-radius: 10px;
-      background: #0f1a2f;
+      background: linear-gradient(180deg, #10203a, #0d182e);
       min-height: 180px;
       padding: 8px;
       display: grid;
       align-content: start;
       gap: 8px;
-      transition: box-shadow 180ms ease, border-color 180ms ease;
+      transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
     }
-    .lane h4 { margin: 0; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #c8dcff; }
+    .lane h4 {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: #c8dcff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .lane h4::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #7ba5d8;
+      box-shadow: 0 0 0 2px #7ba5d833;
+    }
+    .lane[data-lane="now"] { border-color: #366a8f; background: linear-gradient(180deg, #10263f, #0e1e33); }
+    .lane[data-lane="now"] h4::before { background: #73b8ff; box-shadow: 0 0 0 2px #73b8ff33; }
+
+    .lane[data-lane="next"] { border-color: #42698f; background: linear-gradient(180deg, #12243c, #0f1c31); }
+    .lane[data-lane="next"] h4::before { background: #8fc5ff; box-shadow: 0 0 0 2px #8fc5ff33; }
+
+    .lane[data-lane="blocked"] { border-color: #8a5a34; background: linear-gradient(180deg, #2a2016, #21190f); }
+    .lane[data-lane="blocked"] h4::before { background: #ffbf6f; box-shadow: 0 0 0 2px #ffbf6f33; }
+
+    .lane[data-lane="done"] { border-color: #2f6a55; background: linear-gradient(180deg, #142a24, #10221d); }
+    .lane[data-lane="done"] h4::before { background: #71e7ad; box-shadow: 0 0 0 2px #71e7ad33; }
+
     .lane.flash {
       border-color: #88c7ff;
-      box-shadow: 0 0 0 2px #88c7ff66 inset;
+      box-shadow: 0 0 0 2px #88c7ff66 inset, 0 10px 18px rgba(10, 21, 37, 0.45);
+      transform: translateY(-1px);
     }
 
     .task {
