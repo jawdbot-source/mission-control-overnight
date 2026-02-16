@@ -208,6 +208,10 @@
       font-size: 12px;
       color: #d8e6ff;
     }
+    .pill.now { border-color: #3b74a6; background: #163257; color: #d9ecff; }
+    .pill.next { border-color: #496c93; background: #1a2f4d; color: #deebff; }
+    .pill.blocked { border-color: #8a5a34; background: #3a2919; color: #ffe7c6; }
+    .pill.done { border-color: #2f6a55; background: #18352c; color: #d7ffeb; }
 
     .btn {
       border: 1px solid #3b5782;
@@ -746,10 +750,10 @@
     function renderStats() {
       const count = Object.fromEntries(LANES.map((lane) => [lane, sortedTasks(lane).length]));
       qs('stats').innerHTML = [
-        `<span class="pill">Now: ${count.now}</span>`,
-        `<span class="pill">Next: ${count.next}</span>`,
-        `<span class="pill">Blocked: ${count.blocked}</span>`,
-        `<span class="pill">Done: ${count.done}</span>`,
+        `<span class="pill now">Now: ${count.now}</span>`,
+        `<span class="pill next">Next: ${count.next}</span>`,
+        `<span class="pill blocked">Blocked: ${count.blocked}</span>`,
+        `<span class="pill done">Done: ${count.done}</span>`,
       ].join('');
       qs('heroTitle').textContent = app.state.heroTitle;
       qs('heroSub').textContent = app.state.heroSub;
