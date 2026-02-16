@@ -202,6 +202,11 @@
       -webkit-tap-highlight-color: rgba(115, 184, 255, 0.25);
     }
     .btn:hover { border-color: #83c4ff; }
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      border-color: #334b6d;
+    }
     .btn.primary { background: #1f4675; border-color: #83c4ff; }
     .btn.warn { background: #4f3a1d; border-color: #9c6d1d; }
 
@@ -730,6 +735,7 @@
       const topNow = sortedTasks('now')[0];
       const topNext = sortedTasks('next')[0];
       const topBlocked = sortedTasks('blocked')[0];
+      const firstAction = topNow || topBlocked || topNext || null;
       qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
       qs('iaBlocker').textContent = topBlocked
         ? `Top blocker: ${topBlocked.title}`
@@ -741,6 +747,13 @@
           : topNext
             ? `No Now task. Promote “${topNext.title}” from Next.`
             : 'Add a task to begin execution flow.';
+
+      const firstActionBtn = qs('focusFirstActionBtn');
+      if (firstActionBtn) {
+        firstActionBtn.textContent = firstAction ? `Open: ${firstAction.title}` : 'Open first action';
+        firstActionBtn.disabled = !firstAction;
+        firstActionBtn.setAttribute('aria-disabled', firstAction ? 'false' : 'true');
+      }
 
       qs('pathNow').textContent = topNow ? `Now: ${topNow.title}` : 'Now: none';
       qs('pathBlocked').textContent = topBlocked ? `Blocked: ${topBlocked.title}` : 'Blocked: none';
