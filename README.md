@@ -17,6 +17,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Quick-navigation chips jump directly to Workboard, Task details, Strike desk, and Recent updates
 - Start-here focus strip calls out the top action, includes a dynamic **Open: <top task>** first-action button, and can jump to top Now/Blocked/Next task with one click
 - Mission-path strip shows the live top Now/Blocked/Next tasks in one glance
+- Immediate-command strip gives a live 3-step directive (open/move/copy) for the current board state
 - Lane guide explains Now/Next/Blocked/Done semantics at a glance directly above the board
 - Lane highlight flash gives immediate visual confirmation when tasks are saved/moved
 - Lane color system (Now/Next/Blocked/Done) improves scan speed and visual polish
