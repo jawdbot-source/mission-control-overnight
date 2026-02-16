@@ -329,6 +329,7 @@
         <strong>Start here</strong>
         <span class="muted" id="startCue">Loading top action…</span>
         <div class="start-actions">
+          <button class="btn primary" id="focusFirstActionBtn">Open first action</button>
           <button class="btn" id="focusNowBtn">Focus top Now</button>
           <button class="btn" id="focusBlockedBtn">Focus top Blocked</button>
           <button class="btn" id="focusNextBtn">Focus top Next</button>
@@ -827,6 +828,18 @@
       flashAction(`Focused top ${LANE_LABEL[status]} task.`, 'ok');
     }
 
+    function focusFirstAction() {
+      const candidate = sortedTasks('now')[0] || sortedTasks('blocked')[0] || sortedTasks('next')[0] || null;
+      if (!candidate) {
+        flashAction('No tasks available. Add a task to start.', 'warn');
+        return;
+      }
+      app.selectedTaskId = candidate.id;
+      render();
+      qs('taskPanelSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      flashAction(`Opened first action: ${candidate.title}.`, 'ok');
+    }
+
     function saveCurrentTask() {
       const task = getTaskById(app.selectedTaskId);
       if (!task) return;
@@ -929,6 +942,7 @@
       qs('moveBlockedBtn').addEventListener('click', () => moveSelectedTask('blocked'));
       qs('moveDoneBtn').addEventListener('click', () => moveSelectedTask('done'));
 
+      qs('focusFirstActionBtn').addEventListener('click', () => focusFirstAction());
       qs('focusNowBtn').addEventListener('click', () => focusTopTask('now'));
       qs('focusBlockedBtn').addEventListener('click', () => focusTopTask('blocked'));
       qs('focusNextBtn').addEventListener('click', () => focusTopTask('next'));
