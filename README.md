@@ -17,6 +17,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Quick-navigation chips jump directly to Workboard, Task details, Strike desk, and Recent updates
 - Start-here focus strip calls out the top action, includes a single **Open first action** button, and can jump to top Now/Blocked/Next task with one click
 - Lane guide explains Now/Next/Blocked/Done semantics at a glance directly above the board
+- Lane highlight flash gives immediate visual confirmation when tasks are saved/moved
 - Accessibility baseline: skip link, visible keyboard focus states, aria-live action feedback, reduced-motion support, and dialog semantics for task modal
 - Action status line confirms control results (save/open/copy/import/export/reset)
 - Execution flow controls: pull top Next → Now, unblock top Blocked → Next, and one-click lane moves from task editor

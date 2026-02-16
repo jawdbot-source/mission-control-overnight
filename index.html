@@ -210,8 +210,13 @@
       display: grid;
       align-content: start;
       gap: 8px;
+      transition: box-shadow 180ms ease, border-color 180ms ease;
     }
     .lane h4 { margin: 0; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #c8dcff; }
+    .lane.flash {
+      border-color: #88c7ff;
+      box-shadow: 0 0 0 2px #88c7ff66 inset;
+    }
 
     .task {
       border: 1px solid #2a4063;
@@ -626,7 +631,7 @@
               </button>`;
             }).join('')
           : '<div class="empty">No tasks</div>';
-        return `<section class="lane">
+        return `<section class="lane" data-lane="${lane}">
           <h4>${LANE_LABEL[lane]} (${tasks.length})</h4>
           ${cards}
         </section>`;
@@ -823,6 +828,16 @@
       renderFeed();
     }
 
+    function flashLane(status) {
+      const lane = document.querySelector(`.lane[data-lane="${status}"]`);
+      if (!lane) return;
+      lane.classList.remove('flash');
+      requestAnimationFrame(() => {
+        lane.classList.add('flash');
+        setTimeout(() => lane.classList.remove('flash'), 420);
+      });
+    }
+
     function moveSelectedTask(status) {
       const task = getTaskById(app.selectedTaskId);
       if (!task) {
@@ -838,6 +853,7 @@
       addFeed(`Task moved to ${LANE_LABEL[status]}: ${task.title}`, 'change');
       persist();
       render();
+      flashLane(status);
       flashAction(`Moved task to ${LANE_LABEL[status]}.`, 'ok');
       return true;
     }
@@ -869,6 +885,7 @@
     function saveCurrentTask() {
       const task = getTaskById(app.selectedTaskId);
       if (!task) return;
+      const previousStatus = task.status;
       task.title = qs('taskTitle').value.trim() || 'Untitled task';
       task.description = qs('taskDescription').value.trim();
       task.status = qs('taskStatus').value;
@@ -879,6 +896,12 @@
       addFeed('Task updated: ' + task.title, 'change');
       persist();
       render();
+      flashLane(task.status);
+      if (previousStatus !== task.status) {
+        flashAction(`Saved and moved task to ${LANE_LABEL[task.status]}.`, 'ok');
+      } else {
+        flashAction('Task saved.', 'ok');
+      }
     }
 
     function addFeed(text, level = 'info') {
@@ -960,7 +983,6 @@
 
       qs('saveTaskBtn').addEventListener('click', () => {
         saveCurrentTask();
-        flashAction('Task saved.', 'ok');
       });
 
       qs('moveNowBtn').addEventListener('click', () => moveSelectedTask('now'));
