@@ -784,6 +784,27 @@
         firstActionBtn.setAttribute('aria-disabled', firstAction ? 'false' : 'true');
       }
 
+      const focusNowBtn = qs('focusNowBtn');
+      if (focusNowBtn) {
+        focusNowBtn.textContent = topNow ? `Focus Now: ${short(topNow.title, 22)}` : 'Focus top Now';
+        focusNowBtn.disabled = !topNow;
+        focusNowBtn.setAttribute('aria-disabled', topNow ? 'false' : 'true');
+      }
+
+      const focusBlockedBtn = qs('focusBlockedBtn');
+      if (focusBlockedBtn) {
+        focusBlockedBtn.textContent = topBlocked ? `Focus Blocked: ${short(topBlocked.title, 18)}` : 'Focus top Blocked';
+        focusBlockedBtn.disabled = !topBlocked;
+        focusBlockedBtn.setAttribute('aria-disabled', topBlocked ? 'false' : 'true');
+      }
+
+      const focusNextBtn = qs('focusNextBtn');
+      if (focusNextBtn) {
+        focusNextBtn.textContent = topNext ? `Focus Next: ${short(topNext.title, 20)}` : 'Focus top Next';
+        focusNextBtn.disabled = !topNext;
+        focusNextBtn.setAttribute('aria-disabled', topNext ? 'false' : 'true');
+      }
+
       const pullBtn = qs('pullNextBtn');
       if (pullBtn) {
         pullBtn.textContent = topNext ? `Pull Next → Now: ${short(topNext.title, 24)}` : 'Pull top Next → Now';
