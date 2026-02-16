@@ -773,10 +773,16 @@
       const next = sortedTasks('next').slice(0, 4);
       const blocked = sortedTasks('blocked').slice(0, 4);
 
-      const fmt = (arr) => arr.length ? arr.map((t, i) => `${i + 1}. ${t.title} (P${t.priority})`).join('\n') : 'None';
+      const fmt = (arr) => arr.length
+        ? arr.map((t, i) => `${i + 1}. ${t.title} (P${t.priority}${t.owner ? ` · ${t.owner}` : ''})`).join('\n')
+        : 'None';
+
+      const owners = [...new Set(now.concat(blocked).map((t) => t.owner).filter(Boolean))];
+      const linkTasks = now.concat(blocked).filter((t) => t.link).slice(0, 6);
 
       return [
         'Mission Control — execution brief',
+        `Generated: ${new Date().toLocaleString()}`,
         '',
         'Do now:',
         fmt(now),
@@ -786,6 +792,12 @@
         '',
         'Blockers to clear first:',
         blocked.length ? blocked.map((t, i) => `${i + 1}. ${t.title} -> ${t.description || 'add concrete unblock action'}`).join('\n') : 'None',
+        '',
+        'Active owners:',
+        owners.length ? owners.map((o, i) => `${i + 1}. ${o}`).join('\n') : 'None assigned',
+        '',
+        'Fast links:',
+        linkTasks.length ? linkTasks.map((t, i) => `${i + 1}. ${t.title}: ${t.link}`).join('\n') : 'None',
         '',
         'Required report format:',
         '- shipped changes',
