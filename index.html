@@ -577,6 +577,7 @@
       <p class="orientation-line" id="tenSecondLine">10-second view: building quick summary…</p>
       <p class="orientation-line" id="workflowCompass">Workflow compass: Next → Now → Done; Blocked → Next.</p>
       <p class="orientation-line" id="clickPathLine">Click path: preparing first three clicks…</p>
+      <p class="orientation-line" id="operatorSequenceLine">Operator sequence: preparing sequence…</p>
       <p class="orientation-line" id="firstMinutePlanLine">First minute plan: building plan…</p>
       <div class="ia-map" aria-label="10-second workflow map">
         <div class="ia-step">
@@ -1267,6 +1268,17 @@
             : topNext
               ? 'Click path: 1) Pull top Next → Now  2) Open selected task details  3) Copy brief.'
               : 'Click path: 1) Add task  2) Set owner/status  3) Copy brief.';
+      }
+
+      const operatorSequenceLine = qs('operatorSequenceLine');
+      if (operatorSequenceLine) {
+        operatorSequenceLine.textContent = topBlocked
+          ? 'Operator sequence: Unblock blocker → Promote next task → Resume execution.'
+          : topNow
+            ? 'Operator sequence: Update active task → Move status if complete → Share brief.'
+            : topNext
+              ? 'Operator sequence: Pull top Next → Confirm task details → Execute from Now.'
+              : 'Operator sequence: Create first task → Assign owner/status → Begin execution.';
       }
 
       const firstMinutePlanLine = qs('firstMinutePlanLine');
