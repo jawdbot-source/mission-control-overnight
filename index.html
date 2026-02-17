@@ -889,8 +889,15 @@
         el.addEventListener('click', () => {
           app.selectedTaskId = el.getAttribute('data-task-id');
           render();
+          jumpToTaskDetails();
         });
       });
+    }
+
+    function jumpToTaskDetails() {
+      const panel = qs('taskPanelSection');
+      if (!panel || typeof panel.scrollIntoView !== 'function') return;
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function renderStats() {
@@ -1360,7 +1367,7 @@
       }
       app.selectedTaskId = top.id;
       render();
-      qs('taskPanelSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      jumpToTaskDetails();
       flashAction(`Focused top ${LANE_LABEL[status]} task.`, 'ok');
     }
 
@@ -1372,7 +1379,7 @@
       }
       app.selectedTaskId = candidate.id;
       render();
-      qs('taskPanelSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      jumpToTaskDetails();
       flashAction(`Opened first action: ${candidate.title}.`, 'ok');
     }
 
