@@ -17,7 +17,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Reset back to baseline `state.json`
 - **10-second workflow map** at top to orient Plan → Edit → Unblock → Share instantly
 - Sticky top command surface keeps orientation/actions visible while scrolling through details
-- Live orientation lines summarize current objective + decision rule + mode + a 10-second quick-summary line + a dynamic workflow compass + a three-click path + a first-minute plan + "Step X of 4" position, include section-specific goal + action lines, show an at-a-glance board snapshot + workflow progress percentage, and provide one-click **Do this now** + **Next step** buttons
+- Live orientation lines summarize current objective + decision rule + explicit "why now" rationale + mode + a 10-second quick-summary line + a dynamic workflow compass + a three-click path + a first-minute plan + "Step X of 4" position, include section-specific goal + action lines, show an at-a-glance board snapshot + workflow progress percentage, and provide one-click **Do this now** + **Next step** buttons
 - Numbered quick-navigation chips (1→4) jump directly to Workboard, Task details, Strike desk, and Recent updates, with active-section highlighting, jump confirmation feedback, and live status labels (executing/blocked/ready, selected task, update freshness)
 - Quick-nav legend line decodes status terms and shows current workboard mode for instant interpretation
 - Section headings mirror the same 1→4 numbering for instant map-to-panel alignment
