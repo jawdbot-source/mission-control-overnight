@@ -566,6 +566,7 @@
       <p class="orientation-line" id="orientationLine">Loading orientation…</p>
       <p class="orientation-line" id="tenSecondLine">10-second view: building quick summary…</p>
       <p class="orientation-line" id="workflowCompass">Workflow compass: Next → Now → Done; Blocked → Next.</p>
+      <p class="orientation-line" id="clickPathLine">Click path: preparing first three clicks…</p>
       <div class="ia-map" aria-label="10-second workflow map">
         <div class="ia-step">
           <span class="k">1</span>
@@ -1195,6 +1196,17 @@
             : topNext
               ? `Workflow compass: pull ${short(topNext.title, 34)} (Next → Now), then execute to Done.`
               : 'Workflow compass: create first task, set lane to Now, then execute to Done.';
+      }
+
+      const clickPathLine = qs('clickPathLine');
+      if (clickPathLine) {
+        clickPathLine.textContent = topBlocked
+          ? 'Click path: 1) Focus Blocked  2) Unblock top Blocked → Next  3) Pull top Next → Now.'
+          : topNow
+            ? 'Click path: 1) Focus Now  2) Save/move task in details  3) Copy brief.'
+            : topNext
+              ? 'Click path: 1) Pull top Next → Now  2) Open selected task details  3) Copy brief.'
+              : 'Click path: 1) Add task  2) Set owner/status  3) Copy brief.';
       }
 
       qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
