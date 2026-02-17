@@ -607,6 +607,7 @@
         <span class="progress-chip" id="progressStep2">Step 2: execute flow</span>
         <span class="progress-chip" id="progressStep3">Step 3: share brief</span>
       </section>
+      <div class="action-notice" id="progressHint" data-level="info" aria-live="polite">Tip: Start with Step 1 button above.</div>
       <div class="actions">
         <button class="btn primary" id="addTaskBtn">1) Add task</button>
         <button class="btn" id="copyPromptBtn">2) Copy brief</button>
@@ -1015,18 +1016,22 @@
         if (state === 'active') el.classList.add('active');
         if (state === 'done') el.classList.add('done');
       };
+      const progressHint = qs('progressHint');
       if (!firstAction) {
         setProgress(progress1, 'active');
         setProgress(progress2, '');
         setProgress(progress3, '');
+        if (progressHint) progressHint.textContent = 'Tip: Add a task to activate execution flow.';
       } else if (topNow || topBlocked) {
         setProgress(progress1, 'done');
         setProgress(progress2, 'active');
         setProgress(progress3, '');
+        if (progressHint) progressHint.textContent = 'Tip: Update/move current task, then copy brief.';
       } else {
         setProgress(progress1, 'done');
         setProgress(progress2, 'done');
         setProgress(progress3, 'active');
+        if (progressHint) progressHint.textContent = 'Tip: Copy execution brief to hand off current state.';
       }
 
       const orientationLine = qs('orientationLine');
