@@ -580,6 +580,7 @@
       </nav>
       <div class="orientation-line" id="whereAmI">You are in Step 1 of 4: Workboard.</div>
       <div class="muted" id="stepGoalLine">Goal: pick the top task and move execution forward.</div>
+      <div class="muted" id="stepProgressLine">Workflow progress: Step 1/4 (25%).</div>
       <button class="btn" id="nextStepBtn">Next step: Task details</button>
       <section class="start-strip" aria-label="Mission Control start here">
         <strong>Start here</strong>
@@ -1599,10 +1600,11 @@
         app.activeSectionId = sectionId;
         updateNextStepButton(sectionId);
 
+        const idx = SECTION_ORDER.indexOf(sectionId);
+        const step = idx >= 0 ? idx + 1 : '?';
+
         const whereAmI = qs('whereAmI');
         if (whereAmI) {
-          const idx = SECTION_ORDER.indexOf(sectionId);
-          const step = idx >= 0 ? idx + 1 : '?';
           const name = SECTION_NAMES[sectionId] || 'Current section';
           whereAmI.textContent = `You are in Step ${step} of 4: ${name}.`;
         }
@@ -1610,6 +1612,12 @@
         const stepGoalLine = qs('stepGoalLine');
         if (stepGoalLine) {
           stepGoalLine.textContent = SECTION_GOALS[sectionId] || 'Goal: keep execution moving.';
+        }
+
+        const stepProgressLine = qs('stepProgressLine');
+        if (stepProgressLine) {
+          const pct = Number.isFinite(step) ? Math.round((step / SECTION_ORDER.length) * 100) : 0;
+          stepProgressLine.textContent = `Workflow progress: Step ${step}/${SECTION_ORDER.length} (${pct}%).`;
         }
       };
 
