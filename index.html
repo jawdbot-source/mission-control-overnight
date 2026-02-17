@@ -563,6 +563,7 @@
       </div>
       <p class="sub" id="heroSub">Loading workspace…</p>
       <p class="orientation-line" id="objectiveLine">Objective: determining top execution objective…</p>
+      <button class="btn primary" id="doNowBtn">Do this now: loading…</button>
       <p class="orientation-line" id="orientationLine">Loading orientation…</p>
       <p class="orientation-line" id="tenSecondLine">10-second view: building quick summary…</p>
       <p class="orientation-line" id="workflowCompass">Workflow compass: Next → Now → Done; Blocked → Next.</p>
@@ -1122,6 +1123,17 @@
             : topNext
               ? `Objective: promote ${short(topNext.title, 48)} into Now and start execution.`
               : 'Objective: add first task, assign owner, and begin execution.';
+      }
+
+      const doNowBtn = qs('doNowBtn');
+      if (doNowBtn) {
+        doNowBtn.textContent = topBlocked
+          ? `Do this now: Unblock ${short(topBlocked.title, 32)}`
+          : topNow
+            ? `Do this now: Finish ${short(topNow.title, 34)}`
+            : topNext
+              ? `Do this now: Pull ${short(topNext.title, 34)} to Now`
+              : 'Do this now: Add first task';
       }
 
       const atAGlanceLine = qs('atAGlanceLine');
@@ -1879,6 +1891,9 @@
       qs('moveDoneBtn').addEventListener('click', () => moveSelectedTask('done'));
 
       qs('focusFirstActionBtn').addEventListener('click', () => focusFirstAction());
+      qs('doNowBtn').addEventListener('click', () => {
+        qs('recommendedActionBtn').click();
+      });
       qs('focusNowBtn').addEventListener('click', () => focusTopTask('now'));
       qs('focusBlockedBtn').addEventListener('click', () => focusTopTask('blocked'));
       qs('focusNextBtn').addEventListener('click', () => focusTopTask('next'));
