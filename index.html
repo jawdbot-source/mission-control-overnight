@@ -133,6 +133,10 @@
       text-transform: uppercase;
       color: #d9e9ff;
     }
+    .start-reason {
+      font-size: 12px;
+      color: #cfe1ff;
+    }
     .start-actions {
       display: flex;
       gap: 8px;
@@ -462,6 +466,7 @@
       <section class="start-strip" aria-label="Mission Control start here">
         <strong>Start here</strong>
         <span class="muted" id="startCue">Loading top action…</span>
+        <span class="start-reason" id="startReason">Reason: prioritizing critical path.</span>
         <div class="start-actions">
           <button class="btn primary" id="focusFirstActionBtn">Open first action</button>
           <button class="btn" id="focusNowBtn">Focus top Now</button>
@@ -806,6 +811,17 @@
           : topNext
             ? `No Now task. Promote “${topNext.title}” from Next.`
             : 'Add a task to begin execution flow.';
+
+      const startReason = qs('startReason');
+      if (startReason) {
+        startReason.textContent = topNow
+          ? 'Reason: Now lane is active execution and should be finished before pulling more work.'
+          : topBlocked
+            ? 'Reason: Blockers are currently the critical path to recover execution flow.'
+            : topNext
+              ? 'Reason: No active Now task, so highest-priority Next becomes the fastest start.'
+              : 'Reason: No tasks exist yet, so creating one is the first actionable step.';
+      }
 
       const firstActionBtn = qs('focusFirstActionBtn');
       if (firstActionBtn) {
