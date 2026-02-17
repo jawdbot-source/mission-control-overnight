@@ -580,6 +580,7 @@
       </nav>
       <div class="orientation-line" id="whereAmI">You are in Step 1 of 4: Workboard.</div>
       <div class="muted" id="stepGoalLine">Goal: pick the top task and move execution forward.</div>
+      <div class="muted" id="stepActionLine">Action: scan top lane and choose one task.</div>
       <div class="muted" id="stepProgressLine">Workflow progress: Step 1/4 (25%).</div>
       <button class="btn" id="nextStepBtn">Next step: Task details</button>
       <section class="start-strip" aria-label="Mission Control start here">
@@ -781,6 +782,12 @@
       taskPanelSection: 'Goal: edit task details, owner, and status in one pass.',
       strikeDeskSection: 'Goal: capture Strike coordination notes and brief.',
       updatesSection: 'Goal: log latest updates and keep board freshness current.'
+    };
+    const SECTION_ACTIONS = {
+      workboardSection: 'Action: scan top lane and choose one task.',
+      taskPanelSection: 'Action: update details, then save or move status.',
+      strikeDeskSection: 'Action: capture coordination note and copy Strike brief.',
+      updatesSection: 'Action: add fresh update to keep timeline current.'
     };
 
     const qs = (id) => document.getElementById(id);
@@ -1612,6 +1619,11 @@
         const stepGoalLine = qs('stepGoalLine');
         if (stepGoalLine) {
           stepGoalLine.textContent = SECTION_GOALS[sectionId] || 'Goal: keep execution moving.';
+        }
+
+        const stepActionLine = qs('stepActionLine');
+        if (stepActionLine) {
+          stepActionLine.textContent = SECTION_ACTIONS[sectionId] || 'Action: continue workflow.';
         }
 
         const stepProgressLine = qs('stepProgressLine');
