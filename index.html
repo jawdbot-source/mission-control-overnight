@@ -1172,9 +1172,19 @@
       const owners = [...new Set(now.concat(blocked).map((t) => t.owner).filter(Boolean))];
       const linkTasks = now.concat(blocked).filter((t) => t.link).slice(0, 6);
 
+      const mode = blocked.length
+        ? 'blocked'
+        : now.length
+          ? 'executing'
+          : next.length
+            ? 'ready'
+            : 'setup';
+
       return [
         'Mission Control — execution brief',
         `Generated: ${new Date().toLocaleString()}`,
+        `Board mode: ${mode}`,
+        `Lane counts: Now ${now.length} | Next ${next.length} | Blocked ${blocked.length} | Done ${sortedTasks('done').length}`,
         '',
         'Do now:',
         fmt(now),

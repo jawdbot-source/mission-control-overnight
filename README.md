@@ -8,7 +8,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Click any task card to open full detail editor
 - Update status, priority, owner, link, and definition-of-done
 - Add/delete tasks
-- Copy a generated **execution brief** from live board state (timestamped with owners + fast links)
+- Copy a generated **execution brief** from live board state (timestamped with board mode/lane counts, owners, and fast links)
 - Add timeline/feed updates
 - Export/import board JSON
 - Persist board changes in browser `localStorage`
