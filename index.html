@@ -123,6 +123,12 @@
       font-size: 12px;
     }
     .quick-nav a:hover { border-color: #83c4ff; }
+    .quick-nav a.active {
+      border-color: #9dd2ff;
+      background: #18345c;
+      color: #f1f7ff;
+      box-shadow: 0 0 0 1px #9dd2ff33 inset;
+    }
 
     .start-strip {
       border: 1px solid #38557f;
@@ -1418,6 +1424,57 @@
         .replace(/'/g, '&#39;');
     }
 
+    function wireQuickNavTracking() {
+      const links = Array.from(document.querySelectorAll('.quick-nav a[href^="#"]'));
+      if (!links.length) return;
+
+      const sections = links
+        .map((link) => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+
+      const setActive = (sectionId) => {
+        links.forEach((link) => {
+          const href = link.getAttribute('href') || '';
+          link.classList.toggle('active', href === `#${sectionId}`);
+        });
+      };
+
+      links.forEach((link) => {
+        link.addEventListener('click', () => {
+          const id = (link.getAttribute('href') || '').replace('#', '');
+          if (id) setActive(id);
+        });
+      });
+
+      if ('IntersectionObserver' in window && sections.length) {
+        const visibility = new Map();
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            visibility.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+          });
+
+          let bestId = null;
+          let bestRatio = 0;
+          visibility.forEach((ratio, id) => {
+            if (ratio > bestRatio) {
+              bestRatio = ratio;
+              bestId = id;
+            }
+          });
+
+          if (bestId) setActive(bestId);
+        }, {
+          root: null,
+          rootMargin: '-15% 0px -55% 0px',
+          threshold: [0.15, 0.35, 0.6]
+        });
+
+        sections.forEach((section) => observer.observe(section));
+      }
+
+      setActive('workboardSection');
+    }
+
     function wireActions() {
       window.addEventListener('beforeunload', (evt) => {
         if (!hasUnsavedTaskChanges()) return;
@@ -1683,6 +1740,7 @@
       app.selectedTaskId = app.state.tasks[0]?.id || null;
 
       wireActions();
+      wireQuickNavTracking();
       render();
     }
 
