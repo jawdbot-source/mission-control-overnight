@@ -1051,19 +1051,30 @@
       qs('heroTitle').textContent = app.state.heroTitle;
       qs('heroSub').textContent = app.state.heroSub;
       const selectedTask = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
+      const latestFeed = app.state.feed[app.state.feed.length - 1] || null;
       qs('boardMeta').textContent = selectedTask ? `Editing ${selectedTask.title || 'task'}` : 'No task selected';
 
+      const workboardState = count.blocked > 0 ? 'blocked' : count.now > 0 ? 'executing' : count.next > 0 ? 'ready' : 'empty';
       const navWorkboard = qs('navWorkboard');
-      if (navWorkboard) navWorkboard.textContent = `1) Workboard (Now ${count.now} • Blocked ${count.blocked})`;
+      if (navWorkboard) navWorkboard.textContent = `1) Workboard (${workboardState} · Now ${count.now} · Blocked ${count.blocked})`;
+
       const selectedTaskLabel = selectedTask?.title
         ? (selectedTask.title.length > 24 ? `${selectedTask.title.slice(0, 23)}…` : selectedTask.title)
         : '';
       const navTaskDetails = qs('navTaskDetails');
-      if (navTaskDetails) navTaskDetails.textContent = selectedTask ? `2) Task details (${selectedTaskLabel})` : '2) Task details';
+      if (navTaskDetails) navTaskDetails.textContent = selectedTask
+        ? `2) Task details (selected: ${selectedTaskLabel})`
+        : '2) Task details (select task)';
+
+      const strikeNotesCount = (app.state.strikeDesk?.notes || []).length;
       const navStrikeDesk = qs('navStrikeDesk');
-      if (navStrikeDesk) navStrikeDesk.textContent = `3) Strike desk (${(app.state.strikeDesk?.notes || []).length} notes)`;
+      if (navStrikeDesk) navStrikeDesk.textContent = strikeNotesCount
+        ? `3) Strike desk (${strikeNotesCount} notes)`
+        : '3) Strike desk (no notes)';
+
       const navUpdates = qs('navUpdates');
-      if (navUpdates) navUpdates.textContent = `4) Recent updates (${app.state.feed.length})`;
+      const latestUpdateState = latestFeed ? `latest ${formatAge(latestFeed.ts)}` : 'no updates';
+      if (navUpdates) navUpdates.textContent = `4) Recent updates (${latestUpdateState})`;
 
       const contextTrail = qs('contextTrail');
       if (contextTrail) {
@@ -1082,7 +1093,6 @@
           : 'Open selected task details';
       }
 
-      const latestFeed = app.state.feed[app.state.feed.length - 1] || null;
       const freshnessLine = qs('freshnessLine');
       if (freshnessLine) {
         freshnessLine.textContent = latestFeed
