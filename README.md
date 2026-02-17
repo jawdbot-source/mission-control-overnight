@@ -35,6 +35,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Keyboard shortcut strip speeds first actions: `N` add task, `F` open first action, `C` copy brief
 - Execution-progress chips highlight current phase (choose → execute → share) at a glance
 - Progress hint line explains the immediate next action for the active progress phase
+- Validation checklist controls persist with live progress count so checks are never lost on rerender/refresh
 - Accessibility baseline: skip link, visible keyboard focus states, aria-live action feedback, reduced-motion support, and dialog semantics for task modal
 - Action status line confirms control results (save/open/copy/import/export/reset)
 - Open-link control is context-aware and disabled until a valid task link is present
