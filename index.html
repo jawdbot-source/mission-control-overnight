@@ -578,6 +578,7 @@
         <a id="navStrikeDesk" href="#strikeDeskSection">3) Strike desk</a>
         <a id="navUpdates" href="#updatesSection">4) Recent updates</a>
       </nav>
+      <div class="orientation-line" id="whereAmI">You are in Step 1 of 4: Workboard.</div>
       <section class="start-strip" aria-label="Mission Control start here">
         <strong>Start here</strong>
         <span class="muted" id="startCue">Loading top action…</span>
@@ -1514,11 +1515,27 @@
         .map((link) => document.querySelector(link.getAttribute('href')))
         .filter(Boolean);
 
+      const sectionOrder = ['workboardSection', 'taskPanelSection', 'strikeDeskSection', 'updatesSection'];
+      const sectionNames = {
+        workboardSection: 'Workboard',
+        taskPanelSection: 'Task details',
+        strikeDeskSection: 'Strike desk',
+        updatesSection: 'Recent updates'
+      };
+
       const setActive = (sectionId) => {
         links.forEach((link) => {
           const href = link.getAttribute('href') || '';
           link.classList.toggle('active', href === `#${sectionId}`);
         });
+
+        const whereAmI = qs('whereAmI');
+        if (whereAmI) {
+          const idx = sectionOrder.indexOf(sectionId);
+          const step = idx >= 0 ? idx + 1 : '?';
+          const name = sectionNames[sectionId] || 'Current section';
+          whereAmI.textContent = `You are in Step ${step} of 4: ${name}.`;
+        }
       };
 
       links.forEach((link) => {
