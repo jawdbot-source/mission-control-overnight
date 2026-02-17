@@ -804,6 +804,7 @@
         id: f.id || cryptoRandom(),
         text: String(f.text || '').trim() || 'Update',
         time: f.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        ts: Number.isFinite(Number(f.ts)) ? Number(f.ts) : Date.now(),
         level: f.level || 'info'
       };
     }
@@ -861,6 +862,19 @@
       return app.state.tasks
         .filter((t) => t.status === status)
         .sort((a, b) => a.priority - b.priority || a.title.localeCompare(b.title));
+    }
+
+    function formatAge(ts) {
+      const value = Number(ts);
+      if (!Number.isFinite(value) || value <= 0) return 'unknown age';
+      const diffMs = Math.max(0, Date.now() - value);
+      const min = Math.floor(diffMs / 60000);
+      if (min < 1) return 'just now';
+      if (min < 60) return `${min}m ago`;
+      const hrs = Math.floor(min / 60);
+      if (hrs < 24) return `${hrs}h ago`;
+      const days = Math.floor(hrs / 24);
+      return `${days}d ago`;
     }
 
     function renderBoard() {
@@ -961,7 +975,7 @@
       const freshnessLine = qs('freshnessLine');
       if (freshnessLine) {
         freshnessLine.textContent = latestFeed
-          ? `Last update at ${latestFeed.time}: ${latestFeed.text}`
+          ? `Last update ${formatAge(latestFeed.ts)} (${latestFeed.time}): ${latestFeed.text}`
           : 'No updates logged yet.';
       }
 
@@ -1245,7 +1259,7 @@
     function renderFeed() {
       const feed = app.state.feed.slice().reverse();
       qs('feed').innerHTML = feed.length
-        ? feed.map((f) => `<div class="feed-item"><div>${escapeHtml(f.text)}</div><div class="meta">${escapeHtml(f.time)} · ${escapeHtml(f.level)}</div></div>`).join('')
+        ? feed.map((f) => `<div class="feed-item"><div>${escapeHtml(f.text)}</div><div class="meta">${escapeHtml(f.time)} · ${escapeHtml(formatAge(f.ts))} · ${escapeHtml(f.level)}</div></div>`).join('')
         : '<div class="empty">No updates yet.</div>';
     }
 
