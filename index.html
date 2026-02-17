@@ -608,6 +608,7 @@
       <section class="context-strip" aria-label="Current context">
         <span class="context-label">Current context</span>
         <span class="context-text" id="contextTrail">Workboard › No task selected</span>
+        <button class="btn" id="openSelectedTaskBtn" aria-disabled="true" disabled>Open selected task details</button>
       </section>
       <section class="freshness-strip" aria-label="Board freshness">
         <span class="freshness-label">Board freshness</span>
@@ -1033,6 +1034,16 @@
         contextTrail.textContent = selectedTask
           ? `Workboard › ${LANE_LABEL[selectedTask.status]} › ${selectedTask.title}`
           : 'Workboard › No task selected';
+      }
+
+      const openSelectedTaskBtn = qs('openSelectedTaskBtn');
+      if (openSelectedTaskBtn) {
+        const hasTask = Boolean(selectedTask);
+        openSelectedTaskBtn.disabled = !hasTask;
+        openSelectedTaskBtn.setAttribute('aria-disabled', hasTask ? 'false' : 'true');
+        openSelectedTaskBtn.textContent = hasTask
+          ? `Open selected task details: ${selectedTask.title.length > 28 ? `${selectedTask.title.slice(0, 27)}…` : selectedTask.title}`
+          : 'Open selected task details';
       }
 
       const latestFeed = app.state.feed[app.state.feed.length - 1] || null;
@@ -1654,6 +1665,16 @@
         }
         const targetLink = document.querySelector(`.quick-nav a[href="#${targetId}"]`);
         if (targetLink && typeof targetLink.click === 'function') targetLink.click();
+      });
+
+      qs('openSelectedTaskBtn').addEventListener('click', () => {
+        const selectedTask = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
+        if (!selectedTask) {
+          flashAction('No task selected yet. Choose a card first.', 'warn');
+          return;
+        }
+        jumpToTaskDetails();
+        flashAction(`Opened selected task details: ${selectedTask.title}.`, 'info');
       });
 
       qs('addTaskBtn').addEventListener('click', () => {
