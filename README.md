@@ -28,7 +28,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - TL;DR strip gives a one-line immediate directive from live board state
 - Accessibility baseline: skip link, visible keyboard focus states, aria-live action feedback, reduced-motion support, and dialog semantics for task modal
 - Action status line confirms control results (save/open/copy/import/export/reset)
-- Execution flow controls: pull/unblock/complete buttons show live top task labels, disable when empty, and one-click lane moves from task editor
+- Execution flow controls: pull/unblock/complete buttons show live top task labels, disable when empty, and auto-pull top Next after completing final Now task
 - Strike Desk section for Strike coordination (policy guardrail, focus list, notes, copyable strike brief)
 
 ## Files

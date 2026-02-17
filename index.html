@@ -1409,7 +1409,17 @@
           return;
         }
         app.selectedTaskId = nowTask.id;
-        moveSelectedTask('done');
+        const moved = moveSelectedTask('done');
+        if (!moved) return;
+
+        if (sortedTasks('now').length === 0) {
+          const nextTask = sortedTasks('next')[0];
+          if (nextTask) {
+            app.selectedTaskId = nextTask.id;
+            moveSelectedTask('now');
+            flashAction(`Completed and pulled next task: ${nextTask.title}`, 'ok');
+          }
+        }
       });
 
       qs('strikeNoteAddBtn').addEventListener('click', () => {
