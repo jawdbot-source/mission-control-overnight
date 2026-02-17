@@ -581,6 +581,7 @@
       <div class="orientation-line" id="whereAmI">You are in Step 1 of 4: Workboard.</div>
       <div class="muted" id="stepGoalLine">Goal: pick the top task and move execution forward.</div>
       <div class="muted" id="stepActionLine">Action: scan top lane and choose one task.</div>
+      <div class="muted" id="atAGlanceLine">At a glance: assessing board state…</div>
       <div class="muted" id="stepProgressLine">Workflow progress: Step 1/4 (25%).</div>
       <button class="btn" id="nextStepBtn">Next step: Task details</button>
       <section class="start-strip" aria-label="Mission Control start here">
@@ -1078,6 +1079,13 @@
       const topBlocked = sortedTasks('blocked')[0];
       const firstAction = topNow || topBlocked || topNext || null;
       const short = (text, max = 28) => (text && text.length > max ? `${text.slice(0, max - 1)}…` : text || '');
+
+      const atAGlanceLine = qs('atAGlanceLine');
+      if (atAGlanceLine) {
+        atAGlanceLine.textContent = firstAction
+          ? `At a glance: Now ${count.now} · Blocked ${count.blocked} · Next ${count.next} · Focus ${short(firstAction.title, 34)}.`
+          : `At a glance: board is empty (Now ${count.now} · Blocked ${count.blocked} · Next ${count.next}) — add first task.`;
+      }
 
       const tldrLine = qs('tldrLine');
       if (tldrLine) {
