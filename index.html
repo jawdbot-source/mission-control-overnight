@@ -310,6 +310,26 @@
       color: #dbeaff;
     }
 
+    .progress-strip {
+      border: 1px solid #36527a;
+      background: #122540;
+      border-radius: 10px;
+      padding: 7px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .progress-chip {
+      border: 1px solid #3f5d87;
+      background: #1a2f4d;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: #dbe8ff;
+    }
+    .progress-chip.active { border-color: #83c4ff; color: #f0f7ff; }
+    .progress-chip.done { border-color: #2f6a55; color: #d7ffeb; background: #18352c; }
+
     .btn {
       border: 1px solid #3b5782;
       background: #172a4b;
@@ -576,6 +596,11 @@
       <div class="health-strip" id="healthSignal" data-level="info">Status: assessing board…</div>
       <div class="tldr-strip" id="tldrLine">TL;DR: assessing next best action…</div>
       <div class="shortcut-strip" id="shortcutLine">Shortcuts: [N] add task · [F] open first action · [C] copy brief</div>
+      <section class="progress-strip" aria-label="Execution progress">
+        <span class="progress-chip" id="progressStep1">Step 1: choose action</span>
+        <span class="progress-chip" id="progressStep2">Step 2: execute flow</span>
+        <span class="progress-chip" id="progressStep3">Step 3: share brief</span>
+      </section>
       <div class="actions">
         <button class="btn primary" id="addTaskBtn">1) Add task</button>
         <button class="btn" id="copyPromptBtn">2) Copy brief</button>
@@ -935,6 +960,29 @@
             : topNext
               ? `TL;DR: Pull ${short(topNext.title, 42)} into Now and start execution.`
               : 'TL;DR: Add your first task, assign owner, then execute from Now.';
+      }
+
+      const progress1 = qs('progressStep1');
+      const progress2 = qs('progressStep2');
+      const progress3 = qs('progressStep3');
+      const setProgress = (el, state) => {
+        if (!el) return;
+        el.classList.remove('active', 'done');
+        if (state === 'active') el.classList.add('active');
+        if (state === 'done') el.classList.add('done');
+      };
+      if (!firstAction) {
+        setProgress(progress1, 'active');
+        setProgress(progress2, '');
+        setProgress(progress3, '');
+      } else if (topNow || topBlocked) {
+        setProgress(progress1, 'done');
+        setProgress(progress2, 'active');
+        setProgress(progress3, '');
+      } else {
+        setProgress(progress1, 'done');
+        setProgress(progress2, 'done');
+        setProgress(progress3, 'active');
       }
 
       const orientationLine = qs('orientationLine');
