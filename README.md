@@ -48,6 +48,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Buttons now give immediate visual tap/click feedback so control activation is always visible
 - Open-link control is context-aware and disabled until a valid task link is present
 - Execution flow controls: pull/unblock/complete buttons show live top task labels, disable when empty, and auto-pull top Next after completing final Now task
+- Task editor includes one-click **Advance** action that moves selected task along execution path (Blocked→Next→Now→Done, with Done→Next for rework)
 - Strike Desk section for Strike coordination (policy guardrail, focus list, notes, copyable strike brief)
 
 ## Files

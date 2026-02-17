@@ -727,6 +727,7 @@
               <button class="btn" id="moveNextBtn">Move to Next</button>
               <button class="btn warn" id="moveBlockedBtn">Move to Blocked</button>
               <button class="btn ok" id="moveDoneBtn">Move to Done</button>
+              <button class="btn primary" id="advanceTaskBtn">Advance task</button>
             </div>
           </div>
         </section>
@@ -1467,6 +1468,13 @@
             ? `Select top priority task: ${short(topCandidate.title, 30)}`
             : 'Select top priority task (add one first)';
         }
+        const advanceTaskBtn = qs('advanceTaskBtn');
+        if (advanceTaskBtn) {
+          advanceTaskBtn.disabled = true;
+          advanceTaskBtn.setAttribute('aria-disabled', 'true');
+          advanceTaskBtn.textContent = 'Advance task';
+          delete advanceTaskBtn.dataset.targetStatus;
+        }
         syncOpenLinkButtonFromEditor();
         return;
       }
@@ -1475,6 +1483,22 @@
       editor.style.display = 'grid';
       if (selectTopTaskBtn) selectTopTaskBtn.style.display = 'none';
       if (contextLine) contextLine.textContent = `Context: ${LANE_LABEL[task.status]} · P${task.priority} · ${task.owner || 'unassigned owner'}`;
+
+      const advanceTaskBtn = qs('advanceTaskBtn');
+      if (advanceTaskBtn) {
+        const targetStatus = task.status === 'blocked'
+          ? 'next'
+          : task.status === 'next'
+            ? 'now'
+            : task.status === 'now'
+              ? 'done'
+              : 'next';
+        advanceTaskBtn.disabled = false;
+        advanceTaskBtn.setAttribute('aria-disabled', 'false');
+        advanceTaskBtn.dataset.targetStatus = targetStatus;
+        advanceTaskBtn.textContent = `Advance: ${LANE_LABEL[task.status]} → ${LANE_LABEL[targetStatus]}`;
+      }
+
       qs('taskTitle').value = task.title;
       qs('taskDescription').value = task.description;
       qs('taskStatus').value = task.status;
@@ -1978,6 +2002,14 @@
       qs('moveNextBtn').addEventListener('click', () => moveSelectedTask('next'));
       qs('moveBlockedBtn').addEventListener('click', () => moveSelectedTask('blocked'));
       qs('moveDoneBtn').addEventListener('click', () => moveSelectedTask('done'));
+      qs('advanceTaskBtn').addEventListener('click', () => {
+        const target = qs('advanceTaskBtn')?.dataset?.targetStatus;
+        if (!target) {
+          flashAction('No task selected to advance.', 'warn');
+          return;
+        }
+        moveSelectedTask(target);
+      });
 
       qs('focusFirstActionBtn').addEventListener('click', () => focusFirstAction());
       qs('selectTopTaskBtn').addEventListener('click', () => focusFirstAction());
