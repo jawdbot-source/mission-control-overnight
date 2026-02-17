@@ -23,7 +23,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Lane guide explains Now/Next/Blocked/Done semantics at a glance directly above the board
 - Lane highlight flash gives immediate visual confirmation when tasks are saved/moved
 - Lane color system (Now/Next/Blocked/Done) improves scan speed and visual polish
-- Summary counters are lane-colored to make board health legible at a glance
+- Phase pill (blocked/executing/ready/setup) and lane-colored counters make board state legible at a glance
 - Board-health strip summarizes execution state instantly (blocked/executing/ready/empty)
 - TL;DR strip gives a one-line immediate directive from live board state
 - Accessibility baseline: skip link, visible keyboard focus states, aria-live action feedback, reduced-motion support, and dialog semantics for task modal

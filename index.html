@@ -250,6 +250,20 @@
       font-size: 12px;
       color: #d8e6ff;
     }
+    .phase-pill {
+      border: 1px solid #3b5379;
+      background: #152845;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #dceaff;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .phase-pill[data-phase="blocked"] { border-color: #8a5a34; background: #3a2919; color: #ffe7c6; }
+    .phase-pill[data-phase="executing"] { border-color: #2f6a55; background: #18352c; color: #d7ffeb; }
+    .phase-pill[data-phase="ready"] { border-color: #496c93; background: #1a2f4d; color: #deebff; }
+    .phase-pill[data-phase="setup"] { border-color: #3b5379; background: #152845; color: #dceaff; }
     .pill.now { border-color: #3b74a6; background: #163257; color: #d9ecff; }
     .pill.next { border-color: #496c93; background: #1a2f4d; color: #deebff; }
     .pill.blocked { border-color: #8a5a34; background: #3a2919; color: #ffe7c6; }
@@ -472,6 +486,7 @@
     <section class="card topbar">
       <div class="title">
         <h1 id="heroTitle">Mission Control</h1>
+        <span class="phase-pill" id="phasePill" data-phase="setup">Setup</span>
         <span class="pill" id="clock">--:--</span>
       </div>
       <p class="sub" id="heroSub">Loading workspace…</p>
@@ -830,6 +845,19 @@
         `<span class="pill blocked">Blocked: ${count.blocked}</span>`,
         `<span class="pill done">Done: ${count.done}</span>`,
       ].join('');
+
+      const phasePill = qs('phasePill');
+      const phase = count.blocked > 0
+        ? 'blocked'
+        : count.now > 0
+          ? 'executing'
+          : count.next > 0
+            ? 'ready'
+            : 'setup';
+      if (phasePill) {
+        phasePill.dataset.phase = phase;
+        phasePill.textContent = phase;
+      }
 
       const health = qs('healthSignal');
       if (health) {
