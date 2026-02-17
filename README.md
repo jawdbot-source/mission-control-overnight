@@ -16,6 +16,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - **10-second workflow map** at top to orient Plan → Edit → Unblock → Share instantly
 - Live orientation line summarizes current mode (executing/blocked/ready/setup) in one sentence
 - Numbered quick-navigation chips (1→4) jump directly to Workboard, Task details, Strike desk, and Recent updates
+- Primary action bar is numbered (1→5) to reinforce a predictable execution order
 - Start-here focus strip calls out the top action, explains **why** it is first, shows a live **Then** follow-up step, and includes a single dynamic **Step 1** recommended-action button plus contextual Focus Now/Blocked/Next controls
 - Mission-path strip shows the live top Now/Blocked/Next tasks in one glance
 - Immediate-command strip gives a live 3-step directive (open/move/copy) for the current board state

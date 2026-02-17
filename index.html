@@ -577,11 +577,11 @@
       <div class="tldr-strip" id="tldrLine">TL;DR: assessing next best action…</div>
       <div class="shortcut-strip" id="shortcutLine">Shortcuts: [N] add task · [F] open first action · [C] copy brief</div>
       <div class="actions">
-        <button class="btn primary" id="addTaskBtn">Add task</button>
-        <button class="btn" id="copyPromptBtn">Copy execution brief</button>
-        <button class="btn" id="exportBtn">Export board JSON</button>
-        <button class="btn" id="importBtn">Import board JSON</button>
-        <button class="btn warn" id="resetBtn">Reset to baseline</button>
+        <button class="btn primary" id="addTaskBtn">1) Add task</button>
+        <button class="btn" id="copyPromptBtn">2) Copy brief</button>
+        <button class="btn" id="exportBtn">3) Export JSON</button>
+        <button class="btn" id="importBtn">4) Import JSON</button>
+        <button class="btn warn" id="resetBtn">5) Reset baseline</button>
       </div>
       <div class="action-notice" id="actionNotice" data-level="info" aria-live="polite">Ready.</div>
       <input id="importInput" type="file" accept="application/json" style="display:none" />
@@ -1489,11 +1489,11 @@
         try {
           await navigator.clipboard.writeText(qs('prompt').textContent);
           qs('copyPromptBtn').textContent = 'Copied';
-          setTimeout(() => qs('copyPromptBtn').textContent = 'Copy execution brief', 1000);
+          setTimeout(() => qs('copyPromptBtn').textContent = '2) Copy brief', 1000);
           flashAction('Execution brief copied.', 'ok');
         } catch {
           qs('copyPromptBtn').textContent = 'Copy failed';
-          setTimeout(() => qs('copyPromptBtn').textContent = 'Copy execution brief', 1200);
+          setTimeout(() => qs('copyPromptBtn').textContent = '2) Copy brief', 1200);
           flashAction('Copy failed. Select the brief and press ⌘C.', 'warn');
         }
       });
