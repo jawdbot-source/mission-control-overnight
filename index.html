@@ -573,10 +573,10 @@
         </div>
       </div>
       <nav class="quick-nav" aria-label="Mission Control quick navigation">
-        <a href="#workboardSection">1) Workboard</a>
-        <a href="#taskPanelSection">2) Task details</a>
-        <a href="#strikeDeskSection">3) Strike desk</a>
-        <a href="#updatesSection">4) Recent updates</a>
+        <a id="navWorkboard" href="#workboardSection">1) Workboard</a>
+        <a id="navTaskDetails" href="#taskPanelSection">2) Task details</a>
+        <a id="navStrikeDesk" href="#strikeDeskSection">3) Strike desk</a>
+        <a id="navUpdates" href="#updatesSection">4) Recent updates</a>
       </nav>
       <section class="start-strip" aria-label="Mission Control start here">
         <strong>Start here</strong>
@@ -989,6 +989,19 @@
       qs('heroSub').textContent = app.state.heroSub;
       const selectedTask = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
       qs('boardMeta').textContent = selectedTask ? `Editing ${selectedTask.title || 'task'}` : 'No task selected';
+
+      const navWorkboard = qs('navWorkboard');
+      if (navWorkboard) navWorkboard.textContent = `1) Workboard (Now ${count.now} • Blocked ${count.blocked})`;
+      const selectedTaskLabel = selectedTask?.title
+        ? (selectedTask.title.length > 24 ? `${selectedTask.title.slice(0, 23)}…` : selectedTask.title)
+        : '';
+      const navTaskDetails = qs('navTaskDetails');
+      if (navTaskDetails) navTaskDetails.textContent = selectedTask ? `2) Task details (${selectedTaskLabel})` : '2) Task details';
+      const navStrikeDesk = qs('navStrikeDesk');
+      if (navStrikeDesk) navStrikeDesk.textContent = `3) Strike desk (${(app.state.strikeDesk?.notes || []).length} notes)`;
+      const navUpdates = qs('navUpdates');
+      if (navUpdates) navUpdates.textContent = `4) Recent updates (${app.state.feed.length})`;
+
       const contextTrail = qs('contextTrail');
       if (contextTrail) {
         contextTrail.textContent = selectedTask
