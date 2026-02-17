@@ -357,10 +357,16 @@
       padding: 7px 10px;
       font-size: 12px;
       cursor: pointer;
+      transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
       touch-action: manipulation;
       -webkit-tap-highlight-color: rgba(115, 184, 255, 0.25);
     }
     .btn:hover { border-color: #83c4ff; }
+    .btn.feedback {
+      border-color: #9fd4ff;
+      box-shadow: 0 0 0 2px rgba(131, 196, 255, 0.28);
+      transform: translateY(-1px);
+    }
     .btn:disabled {
       cursor: not-allowed;
       opacity: 0.55;
@@ -1719,6 +1725,14 @@
         if (!hasUnsavedTaskChanges()) return;
         evt.preventDefault();
         evt.returnValue = '';
+      });
+
+      document.addEventListener('click', (evt) => {
+        const btn = evt.target?.closest?.('.btn');
+        if (!btn || btn.disabled) return;
+        btn.classList.remove('feedback');
+        requestAnimationFrame(() => btn.classList.add('feedback'));
+        setTimeout(() => btn.classList.remove('feedback'), 180);
       });
 
       document.querySelectorAll('.quick-nav a').forEach((link) => {

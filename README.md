@@ -42,6 +42,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Validation checklist controls persist with live progress count so checks are never lost on rerender/refresh
 - Accessibility baseline: skip link, visible keyboard focus states, aria-live action feedback, reduced-motion support, and dialog semantics for task modal
 - Action status line confirms control results (save/open/copy/import/export/reset)
+- Buttons now give immediate visual tap/click feedback so control activation is always visible
 - Open-link control is context-aware and disabled until a valid task link is present
 - Execution flow controls: pull/unblock/complete buttons show live top task labels, disable when empty, and auto-pull top Next after completing final Now task
 - Strike Desk section for Strike coordination (policy guardrail, focus list, notes, copyable strike brief)
