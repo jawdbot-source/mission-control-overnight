@@ -579,6 +579,7 @@
         <a id="navUpdates" href="#updatesSection">4) Recent updates</a>
       </nav>
       <div class="orientation-line" id="whereAmI">You are in Step 1 of 4: Workboard.</div>
+      <button class="btn" id="nextStepBtn">Next step: Task details</button>
       <section class="start-strip" aria-label="Mission Control start here">
         <strong>Start here</strong>
         <span class="muted" id="startCue">Loading top action…</span>
@@ -761,6 +762,13 @@
     const CRITERIA_STORAGE_KEY = 'mc:criteria:v1';
     const LANES = ['now', 'next', 'blocked', 'done'];
     const LANE_LABEL = { now: 'Now', next: 'Next', blocked: 'Blocked', done: 'Done' };
+    const SECTION_ORDER = ['workboardSection', 'taskPanelSection', 'strikeDeskSection', 'updatesSection'];
+    const SECTION_NAMES = {
+      workboardSection: 'Workboard',
+      taskPanelSection: 'Task details',
+      strikeDeskSection: 'Strike desk',
+      updatesSection: 'Recent updates'
+    };
 
     const qs = (id) => document.getElementById(id);
 
@@ -1541,6 +1549,17 @@
         .replace(/'/g, '&#39;');
     }
 
+    function updateNextStepButton(sectionId) {
+      const btn = qs('nextStepBtn');
+      if (!btn) return;
+      const idx = SECTION_ORDER.indexOf(sectionId);
+      const safeIdx = idx >= 0 ? idx : 0;
+      const nextIdx = (safeIdx + 1) % SECTION_ORDER.length;
+      const nextId = SECTION_ORDER[nextIdx];
+      btn.dataset.targetSection = nextId;
+      btn.textContent = `Next step: ${SECTION_NAMES[nextId]}`;
+    }
+
     function wireQuickNavTracking() {
       const links = Array.from(document.querySelectorAll('.quick-nav a[href^="#"]'));
       if (!links.length) return;
@@ -1549,25 +1568,20 @@
         .map((link) => document.querySelector(link.getAttribute('href')))
         .filter(Boolean);
 
-      const sectionOrder = ['workboardSection', 'taskPanelSection', 'strikeDeskSection', 'updatesSection'];
-      const sectionNames = {
-        workboardSection: 'Workboard',
-        taskPanelSection: 'Task details',
-        strikeDeskSection: 'Strike desk',
-        updatesSection: 'Recent updates'
-      };
-
       const setActive = (sectionId) => {
         links.forEach((link) => {
           const href = link.getAttribute('href') || '';
           link.classList.toggle('active', href === `#${sectionId}`);
         });
 
+        app.activeSectionId = sectionId;
+        updateNextStepButton(sectionId);
+
         const whereAmI = qs('whereAmI');
         if (whereAmI) {
-          const idx = sectionOrder.indexOf(sectionId);
+          const idx = SECTION_ORDER.indexOf(sectionId);
           const step = idx >= 0 ? idx + 1 : '?';
-          const name = sectionNames[sectionId] || 'Current section';
+          const name = SECTION_NAMES[sectionId] || 'Current section';
           whereAmI.textContent = `You are in Step ${step} of 4: ${name}.`;
         }
       };
@@ -1625,6 +1639,21 @@
           if (confirm('You have unsaved task edits. Continue without saving?')) return;
           evt.preventDefault();
         });
+      });
+
+      qs('nextStepBtn').addEventListener('click', () => {
+        if (hasUnsavedTaskChanges() && !confirm('You have unsaved task edits. Continue without saving?')) {
+          return;
+        }
+
+        const targetId = qs('nextStepBtn')?.dataset?.targetSection;
+        if (!targetId) return;
+        const target = document.getElementById(targetId);
+        if (target && typeof target.scrollIntoView === 'function') {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        const targetLink = document.querySelector(`.quick-nav a[href="#${targetId}"]`);
+        if (targetLink && typeof targetLink.click === 'function') targetLink.click();
       });
 
       qs('addTaskBtn').addEventListener('click', () => {
