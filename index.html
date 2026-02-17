@@ -531,6 +531,7 @@
         <strong>Start here</strong>
         <span class="muted" id="startCue">Loading top action…</span>
         <span class="start-reason" id="startReason">Reason: prioritizing critical path.</span>
+        <button class="btn primary" id="recommendedActionBtn">Run recommended step</button>
         <div class="start-actions">
           <button class="btn primary" id="focusFirstActionBtn">Open first action</button>
           <button class="btn" id="focusNowBtn">Focus top Now</button>
@@ -707,6 +708,7 @@
       state: null,
       selectedTaskId: null,
       actionNoticeTimer: null,
+      recommendedAction: null,
       heartbeatChecklist: [
         'Scope stays on making Mission Control genuinely useful for daily execution.',
         'Every clickable control must produce a visible state change.',
@@ -943,6 +945,23 @@
             : topNext
               ? 'Reason: No active Now task, so highest-priority Next becomes the fastest start.'
               : 'Reason: No tasks exist yet, so creating one is the first actionable step.';
+      }
+
+      const recommendedActionBtn = qs('recommendedActionBtn');
+      if (recommendedActionBtn) {
+        if (topNow) {
+          app.recommendedAction = 'openFirst';
+          recommendedActionBtn.textContent = `Step 1: Open ${short(topNow.title, 28)}`;
+        } else if (topBlocked) {
+          app.recommendedAction = 'unblockTop';
+          recommendedActionBtn.textContent = `Step 1: Unblock ${short(topBlocked.title, 26)}`;
+        } else if (topNext) {
+          app.recommendedAction = 'pullTopNext';
+          recommendedActionBtn.textContent = `Step 1: Pull ${short(topNext.title, 28)}`;
+        } else {
+          app.recommendedAction = 'addTask';
+          recommendedActionBtn.textContent = 'Step 1: Add first task';
+        }
       }
 
       const firstActionBtn = qs('focusFirstActionBtn');
@@ -1387,6 +1406,22 @@
       qs('focusNowBtn').addEventListener('click', () => focusTopTask('now'));
       qs('focusBlockedBtn').addEventListener('click', () => focusTopTask('blocked'));
       qs('focusNextBtn').addEventListener('click', () => focusTopTask('next'));
+      qs('recommendedActionBtn').addEventListener('click', () => {
+        switch (app.recommendedAction) {
+          case 'openFirst':
+            qs('focusFirstActionBtn').click();
+            break;
+          case 'unblockTop':
+            qs('unblockTopBtn').click();
+            break;
+          case 'pullTopNext':
+            qs('pullNextBtn').click();
+            break;
+          default:
+            qs('addTaskBtn').click();
+            break;
+        }
+      });
 
       qs('deleteTaskBtn').addEventListener('click', () => {
         const task = getTaskById(app.selectedTaskId);
