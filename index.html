@@ -535,6 +535,7 @@
           <div class="row">
             <button class="btn" id="pullNextBtn">Pull top Next → Now</button>
             <button class="btn" id="unblockTopBtn">Unblock top Blocked → Next</button>
+            <button class="btn ok" id="completeTopNowBtn">Complete top Now → Done</button>
           </div>
         </div>
         <div class="lane-guide" id="laneGuide" aria-label="Lane guide">
@@ -894,6 +895,13 @@
         unblockBtn.textContent = topBlocked ? `Unblock → Next: ${short(topBlocked.title, 22)}` : 'Unblock top Blocked → Next';
         unblockBtn.disabled = !topBlocked;
         unblockBtn.setAttribute('aria-disabled', topBlocked ? 'false' : 'true');
+      }
+
+      const completeBtn = qs('completeTopNowBtn');
+      if (completeBtn) {
+        completeBtn.textContent = topNow ? `Complete → Done: ${short(topNow.title, 20)}` : 'Complete top Now → Done';
+        completeBtn.disabled = !topNow;
+        completeBtn.setAttribute('aria-disabled', topNow ? 'false' : 'true');
       }
 
       qs('pathNow').textContent = topNow ? `Now: ${topNow.title}` : 'Now: none';
@@ -1340,6 +1348,16 @@
         }
         app.selectedTaskId = blockedTask.id;
         moveSelectedTask('next');
+      });
+
+      qs('completeTopNowBtn').addEventListener('click', () => {
+        const nowTask = sortedTasks('now')[0];
+        if (!nowTask) {
+          flashAction('No tasks in Now lane.', 'warn');
+          return;
+        }
+        app.selectedTaskId = nowTask.id;
+        moveSelectedTask('done');
       });
 
       qs('strikeNoteAddBtn').addEventListener('click', () => {
