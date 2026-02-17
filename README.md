@@ -22,6 +22,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Section headings mirror the same 1→4 numbering for instant map-to-panel alignment
 - Every major section now includes a one-line “Purpose” statement to make panel intent obvious on first scan
 - Panel sections now use intentional visual accents by function (task/brief/validation/heartbeat/strike/updates) for faster scanning and cleaner polish
+- Heading typography now has clear hierarchy (stronger section titles, lighter panel labels) for a more finished visual system
 - Primary action bar is numbered (1→5) to reinforce a predictable execution order
 - Start-here focus strip calls out the top action, explains **why** it is first, shows a live **Then** follow-up step, and includes a single dynamic **Step 1** recommended-action button plus contextual Focus Now/Blocked/Next controls
 - Mission-path strip shows the live top Now/Blocked/Next tasks in one glance and each chip jumps directly into that task
