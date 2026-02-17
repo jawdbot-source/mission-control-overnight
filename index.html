@@ -580,6 +580,7 @@
       <p class="orientation-line" id="operatorSequenceLine">Operator sequence: preparing sequence…</p>
       <p class="orientation-line" id="outcomeLine">Outcome: preparing expected result…</p>
       <p class="orientation-line" id="firstMinutePlanLine">First minute plan: building plan…</p>
+      <p class="orientation-line" id="tenSecondChecklistLine">10-second checklist: preparing checklist…</p>
       <div class="ia-map" aria-label="10-second workflow map">
         <div class="ia-step">
           <span class="k">1</span>
@@ -1303,6 +1304,17 @@
             : topNext
               ? 'First minute plan: pull Next to Now → assign owner/check details → copy brief.'
               : 'First minute plan: add first task → set owner/status → copy brief.';
+      }
+
+      const tenSecondChecklistLine = qs('tenSecondChecklistLine');
+      if (tenSecondChecklistLine) {
+        tenSecondChecklistLine.textContent = topBlocked
+          ? '10-second checklist: 1) Unblock blocker  2) Pull task to Now  3) Copy brief.'
+          : topNow
+            ? '10-second checklist: 1) Update active task  2) Advance lane  3) Copy brief.'
+            : topNext
+              ? '10-second checklist: 1) Pull top Next  2) Confirm task details  3) Copy brief.'
+              : '10-second checklist: 1) Add task  2) Set owner/status  3) Copy brief.';
       }
 
       qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
