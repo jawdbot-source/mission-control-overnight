@@ -19,6 +19,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Mission-path strip shows the live top Now/Blocked/Next tasks in one glance
 - Immediate-command strip gives a live 3-step directive (open/move/copy) for the current board state
 - Current-context trail shows exactly where you are (lane + selected task) at all times
+- Board-freshness strip shows the latest logged update and timestamp at a glance
 - Lane guide explains Now/Next/Blocked/Done semantics at a glance directly above the board
 - Lane highlight flash gives immediate visual confirmation when tasks are saved/moved
 - Lane color system (Now/Next/Blocked/Done) improves scan speed and visual polish
