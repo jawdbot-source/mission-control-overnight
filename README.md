@@ -32,6 +32,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 - Current-context strip includes one-click “Open selected task details” action for instant return to editor focus
 - Board-freshness strip shows the latest logged update with relative age + timestamp at a glance
 - Lane guide explains Now/Next/Blocked/Done semantics at a glance directly above the board
+- Each lane header now includes an inline lane hint (Do this cycle / Ready queue / Needs unblock / Shipped + verified) for faster board scanning
 - Lane highlight flash gives immediate visual confirmation when tasks are saved/moved
 - Lane color system (Now/Next/Blocked/Done) improves scan speed and visual polish
 - Symbol-coded phase pill (■ blocked / ● executing / → ready / ○ setup) and lane-colored counters make board state legible at a glance

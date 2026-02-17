@@ -433,6 +433,13 @@
       background: #7ba5d8;
       box-shadow: 0 0 0 2px #7ba5d833;
     }
+    .lane-head { display: grid; gap: 2px; }
+    .lane-hint {
+      font-size: 10px;
+      letter-spacing: .02em;
+      color: #94b2d8;
+      text-transform: none;
+    }
     .lane[data-lane="now"] { border-color: #366a8f; background: linear-gradient(180deg, #10263f, #0e1e33); }
     .lane[data-lane="now"] h4::before { background: #73b8ff; box-shadow: 0 0 0 2px #73b8ff33; }
 
@@ -791,6 +798,12 @@
     const CRITERIA_STORAGE_KEY = 'mc:criteria:v1';
     const LANES = ['now', 'next', 'blocked', 'done'];
     const LANE_LABEL = { now: 'Now', next: 'Next', blocked: 'Blocked', done: 'Done' };
+    const LANE_HINT = {
+      now: 'Do this cycle',
+      next: 'Ready queue',
+      blocked: 'Needs unblock',
+      done: 'Shipped + verified'
+    };
     const SECTION_ORDER = ['workboardSection', 'taskPanelSection', 'strikeDeskSection', 'updatesSection'];
     const SECTION_NAMES = {
       workboardSection: 'Workboard',
@@ -986,7 +999,10 @@
             }).join('')
           : '<div class="empty">No tasks</div>';
         return `<section class="lane" data-lane="${lane}">
-          <h4>${LANE_LABEL[lane]} (${tasks.length})</h4>
+          <div class="lane-head">
+            <h4>${LANE_LABEL[lane]} (${tasks.length})</h4>
+            <span class="lane-hint">${LANE_HINT[lane]}</span>
+          </div>
           ${cards}
         </section>`;
       }).join('');
