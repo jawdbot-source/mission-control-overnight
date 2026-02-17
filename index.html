@@ -657,6 +657,7 @@
       <aside class="card panel" id="taskPanelSection">
         <section class="panel-section">
           <h3>2. Task details</h3>
+          <div class="muted" id="taskContextLine">Context: no task selected.</div>
           <div id="taskEmpty" class="empty">Select a task card to edit details and move status.</div>
           <div id="taskEditor" style="display:none; gap:8px;">
             <label>Title<input id="taskTitle" name="taskTitle" autocomplete="off" /></label>
@@ -1205,15 +1206,18 @@
       const task = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
       const empty = qs('taskEmpty');
       const editor = qs('taskEditor');
+      const contextLine = qs('taskContextLine');
       if (!task) {
         empty.style.display = 'block';
         editor.style.display = 'none';
+        if (contextLine) contextLine.textContent = 'Context: no task selected.';
         syncOpenLinkButtonFromEditor();
         return;
       }
 
       empty.style.display = 'none';
       editor.style.display = 'grid';
+      if (contextLine) contextLine.textContent = `Context: ${LANE_LABEL[task.status]} · P${task.priority} · ${task.owner || 'unassigned owner'}`;
       qs('taskTitle').value = task.title;
       qs('taskDescription').value = task.description;
       qs('taskStatus').value = task.status;

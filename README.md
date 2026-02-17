@@ -6,6 +6,7 @@ Mission Control is now a **functional execution board**, not a static mock.
 
 - Editable task board with 4 lanes: **Now / Next / Blocked / Done**
 - Click any task card to open full detail editor (auto-jumps to Task details panel)
+- Task details header shows live context (lane, priority, owner) for the selected task
 - On load/import/reset/delete, task selection defaults to top-priority Now → Blocked → Next → Done item
 - Update status, priority, owner, link, and definition-of-done
 - Add/delete tasks
