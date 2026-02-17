@@ -697,6 +697,7 @@
           <div class="muted" id="taskPurposeLine">Purpose: update selected task details, owner, and status before saving.</div>
           <div class="muted" id="taskContextLine">Context: no task selected.</div>
           <div id="taskEmpty" class="empty">Select a task card to edit details and move status.</div>
+          <button class="btn" id="selectTopTaskBtn">Select top priority task</button>
           <div id="taskEditor" style="display:none; gap:8px;">
             <label>Title<input id="taskTitle" name="taskTitle" autocomplete="off" /></label>
             <label>Description<textarea id="taskDescription" name="taskDescription" autocomplete="off" placeholder="Describe the task…"></textarea></label>
@@ -1427,16 +1428,28 @@
       const empty = qs('taskEmpty');
       const editor = qs('taskEditor');
       const contextLine = qs('taskContextLine');
+      const selectTopTaskBtn = qs('selectTopTaskBtn');
+      const topCandidate = sortedTasks('now')[0] || sortedTasks('blocked')[0] || sortedTasks('next')[0] || sortedTasks('done')[0] || null;
+      const short = (text, max = 28) => (text && text.length > max ? `${text.slice(0, max - 1)}…` : text || '');
       if (!task) {
         empty.style.display = 'block';
         editor.style.display = 'none';
         if (contextLine) contextLine.textContent = 'Context: no task selected.';
+        if (selectTopTaskBtn) {
+          selectTopTaskBtn.style.display = 'inline-flex';
+          selectTopTaskBtn.disabled = !topCandidate;
+          selectTopTaskBtn.setAttribute('aria-disabled', topCandidate ? 'false' : 'true');
+          selectTopTaskBtn.textContent = topCandidate
+            ? `Select top priority task: ${short(topCandidate.title, 30)}`
+            : 'Select top priority task (add one first)';
+        }
         syncOpenLinkButtonFromEditor();
         return;
       }
 
       empty.style.display = 'none';
       editor.style.display = 'grid';
+      if (selectTopTaskBtn) selectTopTaskBtn.style.display = 'none';
       if (contextLine) contextLine.textContent = `Context: ${LANE_LABEL[task.status]} · P${task.priority} · ${task.owner || 'unassigned owner'}`;
       qs('taskTitle').value = task.title;
       qs('taskDescription').value = task.description;
@@ -1943,6 +1956,7 @@
       qs('moveDoneBtn').addEventListener('click', () => moveSelectedTask('done'));
 
       qs('focusFirstActionBtn').addEventListener('click', () => focusFirstAction());
+      qs('selectTopTaskBtn').addEventListener('click', () => focusFirstAction());
       qs('doNowBtn').addEventListener('click', () => {
         qs('recommendedActionBtn').click();
       });
