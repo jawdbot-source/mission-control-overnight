@@ -595,6 +595,7 @@
         <a id="navStrikeDesk" href="#strikeDeskSection">3) Strike desk</a>
         <a id="navUpdates" href="#updatesSection">4) Recent updates</a>
       </nav>
+      <div class="muted" id="navLegendLine">Nav legend: blocked = blockers present · executing = active Now tasks · ready = Next queue only · empty = no tasks yet.</div>
       <div class="orientation-line" id="whereAmI">You are in Step 1 of 4: Workboard.</div>
       <div class="muted" id="stepGoalLine">Goal: pick the top task and move execution forward.</div>
       <div class="muted" id="stepActionLine">Action: scan top lane and choose one task.</div>
@@ -1076,6 +1077,11 @@
       const navUpdates = qs('navUpdates');
       const latestUpdateState = latestFeed ? `latest ${formatAge(latestFeed.ts)}` : 'no updates';
       if (navUpdates) navUpdates.textContent = `4) Recent updates (${latestUpdateState})`;
+
+      const navLegendLine = qs('navLegendLine');
+      if (navLegendLine) {
+        navLegendLine.textContent = `Nav legend: blocked = blockers present · executing = active Now tasks · ready = Next queue only · empty = no tasks yet. Current: ${workboardState}.`;
+      }
 
       const contextTrail = qs('contextTrail');
       if (contextTrail) {
