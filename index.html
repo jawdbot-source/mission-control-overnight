@@ -1514,7 +1514,8 @@
     function flashAction(text, level = 'info') {
       const notice = qs('actionNotice');
       if (!notice) return;
-      notice.textContent = text;
+      const stamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      notice.textContent = `[${stamp}] ${text}`;
       notice.dataset.level = level;
       if (app.actionNoticeTimer) clearTimeout(app.actionNoticeTimer);
       app.actionNoticeTimer = setTimeout(() => {
