@@ -190,6 +190,11 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .path-item:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .command-strip {
@@ -581,9 +586,9 @@
       <section class="path-strip" aria-label="10-second mission path">
         <span class="path-title">Mission path</span>
         <div class="path-items">
-          <span class="path-item" id="pathNow">Now: —</span>
-          <span class="path-item" id="pathBlocked">Blocked: —</span>
-          <span class="path-item" id="pathNext">Next: —</span>
+          <button class="path-item" id="pathNowBtn">Now: —</button>
+          <button class="path-item" id="pathBlockedBtn">Blocked: —</button>
+          <button class="path-item" id="pathNextBtn">Next: —</button>
         </div>
       </section>
       <section class="command-strip" aria-label="Immediate command">
@@ -1145,9 +1150,18 @@
         completeBtn.setAttribute('aria-disabled', topNow ? 'false' : 'true');
       }
 
-      qs('pathNow').textContent = topNow ? `Now: ${topNow.title}` : 'Now: none';
-      qs('pathBlocked').textContent = topBlocked ? `Blocked: ${topBlocked.title}` : 'Blocked: none';
-      qs('pathNext').textContent = topNext ? `Next: ${topNext.title}` : 'Next: none';
+      const setPathButton = (id, prefix, task) => {
+        const btn = qs(id);
+        if (!btn) return;
+        btn.textContent = task ? `${prefix}: ${short(task.title, 30)}` : `${prefix}: none`;
+        btn.disabled = !task;
+        btn.setAttribute('aria-disabled', task ? 'false' : 'true');
+        if (task) btn.dataset.taskId = task.id;
+        else delete btn.dataset.taskId;
+      };
+      setPathButton('pathNowBtn', 'Now', topNow);
+      setPathButton('pathBlockedBtn', 'Blocked', topBlocked);
+      setPathButton('pathNextBtn', 'Next', topNext);
 
       const command = topNow
         ? `1) Open ${short(topNow.title, 36)}  2) Move or save  3) Copy execution brief`
@@ -1388,16 +1402,26 @@
       return true;
     }
 
+    function focusTaskById(taskId, label = 'task') {
+      const task = getTaskById(taskId);
+      if (!task) {
+        flashAction('Task no longer exists. Refresh view.', 'warn');
+        return false;
+      }
+      app.selectedTaskId = task.id;
+      render();
+      jumpToTaskDetails();
+      flashAction(`Focused ${label}: ${task.title}.`, 'ok');
+      return true;
+    }
+
     function focusTopTask(status) {
       const top = sortedTasks(status)[0];
       if (!top) {
         flashAction(`No tasks in ${LANE_LABEL[status]} lane.`, 'warn');
         return;
       }
-      app.selectedTaskId = top.id;
-      render();
-      jumpToTaskDetails();
-      flashAction(`Focused top ${LANE_LABEL[status]} task.`, 'ok');
+      focusTaskById(top.id, `top ${LANE_LABEL[status]}`);
     }
 
     function focusFirstAction() {
@@ -1406,10 +1430,7 @@
         flashAction('No tasks available. Add a task to start.', 'warn');
         return;
       }
-      app.selectedTaskId = candidate.id;
-      render();
-      jumpToTaskDetails();
-      flashAction(`Opened first action: ${candidate.title}.`, 'ok');
+      focusTaskById(candidate.id, 'first action');
     }
 
     function saveCurrentTask() {
@@ -1603,6 +1624,18 @@
       qs('focusNowBtn').addEventListener('click', () => focusTopTask('now'));
       qs('focusBlockedBtn').addEventListener('click', () => focusTopTask('blocked'));
       qs('focusNextBtn').addEventListener('click', () => focusTopTask('next'));
+      qs('pathNowBtn').addEventListener('click', () => {
+        const id = qs('pathNowBtn')?.dataset?.taskId;
+        if (id) focusTaskById(id, 'Now path');
+      });
+      qs('pathBlockedBtn').addEventListener('click', () => {
+        const id = qs('pathBlockedBtn')?.dataset?.taskId;
+        if (id) focusTaskById(id, 'Blocked path');
+      });
+      qs('pathNextBtn').addEventListener('click', () => {
+        const id = qs('pathNextBtn')?.dataset?.taskId;
+        if (id) focusTaskById(id, 'Next path');
+      });
       qs('recommendedActionBtn').addEventListener('click', () => {
         switch (app.recommendedAction) {
           case 'openFirst':
