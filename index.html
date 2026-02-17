@@ -1447,9 +1447,13 @@
       };
 
       links.forEach((link) => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (evt) => {
+          if (evt.defaultPrevented) return;
           const id = (link.getAttribute('href') || '').replace('#', '');
-          if (id) setActive(id);
+          if (!id) return;
+          setActive(id);
+          const label = (link.textContent || '').replace(/^\s*\d+\)\s*/, '').trim();
+          if (label) flashAction(`Jumped to ${label}.`, 'info');
         });
       });
 
