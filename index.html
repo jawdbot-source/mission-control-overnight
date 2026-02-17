@@ -971,6 +971,25 @@
       if (missionCommand) missionCommand.textContent = command;
     }
 
+    function syncOpenLinkButtonFromEditor() {
+      const btn = qs('openTaskLinkBtn');
+      const editor = qs('taskEditor');
+      if (!btn || !editor || editor.style.display !== 'grid') {
+        if (btn) {
+          btn.textContent = 'Open link';
+          btn.disabled = true;
+          btn.setAttribute('aria-disabled', 'true');
+        }
+        return;
+      }
+
+      const link = (qs('taskLink')?.value || '').trim();
+      const hasLink = Boolean(link);
+      btn.textContent = hasLink ? 'Open link' : 'Open link (add URL)';
+      btn.disabled = !hasLink;
+      btn.setAttribute('aria-disabled', hasLink ? 'false' : 'true');
+    }
+
     function renderTaskEditor() {
       const task = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
       const empty = qs('taskEmpty');
@@ -978,6 +997,7 @@
       if (!task) {
         empty.style.display = 'block';
         editor.style.display = 'none';
+        syncOpenLinkButtonFromEditor();
         return;
       }
 
@@ -990,6 +1010,7 @@
       qs('taskLink').value = task.link || '';
       qs('taskOwner').value = task.owner || '';
       qs('taskDoD').value = task.definitionOfDone.join('\n');
+      syncOpenLinkButtonFromEditor();
     }
 
     function buildExecutionBrief() {
@@ -1294,6 +1315,9 @@
       qs('saveTaskBtn').addEventListener('click', () => {
         saveCurrentTask();
       });
+      qs('taskLink').addEventListener('input', () => {
+        syncOpenLinkButtonFromEditor();
+      });
 
       qs('moveNowBtn').addEventListener('click', () => moveSelectedTask('now'));
       qs('moveNextBtn').addEventListener('click', () => moveSelectedTask('next'));
@@ -1323,11 +1347,12 @@
           flashAction('Select a task first.', 'warn');
           return;
         }
-        if (!task.link) {
+        const link = (task.link || '').trim();
+        if (!link) {
           flashAction('Add a link in task details first.', 'warn');
           return;
         }
-        window.open(task.link, '_blank', 'noopener');
+        window.open(link, '_blank', 'noopener');
         flashAction('Opened task link in a new tab.', 'ok');
       });
 
