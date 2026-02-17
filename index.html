@@ -137,6 +137,12 @@
       font-size: 12px;
       color: #cfe1ff;
     }
+    .start-plan {
+      font-size: 12px;
+      color: #cfe4ff;
+      border-left: 2px solid #4f79aa;
+      padding-left: 8px;
+    }
     .start-actions {
       display: flex;
       gap: 8px;
@@ -531,6 +537,7 @@
         <strong>Start here</strong>
         <span class="muted" id="startCue">Loading top action…</span>
         <span class="start-reason" id="startReason">Reason: prioritizing critical path.</span>
+        <span class="start-plan" id="startPlan">Then: move flow and copy execution brief.</span>
         <button class="btn primary" id="recommendedActionBtn">Run recommended step</button>
         <div class="start-actions">
           <button class="btn primary" id="focusFirstActionBtn">Open first action</button>
@@ -945,6 +952,17 @@
             : topNext
               ? 'Reason: No active Now task, so highest-priority Next becomes the fastest start.'
               : 'Reason: No tasks exist yet, so creating one is the first actionable step.';
+      }
+
+      const startPlan = qs('startPlan');
+      if (startPlan) {
+        startPlan.textContent = topNow
+          ? 'Then: update status (or complete) and copy execution brief.'
+          : topBlocked
+            ? 'Then: move unblocked work to Next/Now and continue execution.'
+            : topNext
+              ? 'Then: open task details, assign owner, and execute from Now.'
+              : 'Then: add a task, set owner/status, and start with Step 1.';
       }
 
       const recommendedActionBtn = qs('recommendedActionBtn');
