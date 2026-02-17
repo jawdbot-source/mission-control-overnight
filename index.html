@@ -255,6 +255,18 @@
     .pill.blocked { border-color: #8a5a34; background: #3a2919; color: #ffe7c6; }
     .pill.done { border-color: #2f6a55; background: #18352c; color: #d7ffeb; }
 
+    .health-strip {
+      border: 1px solid #35517a;
+      background: #12233f;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: #dceaff;
+    }
+    .health-strip[data-level="ok"] { border-color: #2f6a55; color: #d7ffeb; }
+    .health-strip[data-level="warn"] { border-color: #8a5a34; color: #ffe7c6; }
+    .health-strip[data-level="info"] { border-color: #35517a; color: #dceaff; }
+
     .btn {
       border: 1px solid #3b5782;
       background: #172a4b;
@@ -514,6 +526,7 @@
         <span class="freshness-text" id="freshnessLine">No updates logged yet.</span>
       </section>
       <div class="stats" id="stats"></div>
+      <div class="health-strip" id="healthSignal" data-level="info">Status: assessing board…</div>
       <div class="actions">
         <button class="btn primary" id="addTaskBtn">Add task</button>
         <button class="btn" id="copyPromptBtn">Copy execution brief</button>
@@ -807,6 +820,24 @@
         `<span class="pill blocked">Blocked: ${count.blocked}</span>`,
         `<span class="pill done">Done: ${count.done}</span>`,
       ].join('');
+
+      const health = qs('healthSignal');
+      if (health) {
+        if (count.blocked > 0) {
+          health.textContent = `Status: blocked path (${count.blocked}) — clear blockers first.`;
+          health.dataset.level = 'warn';
+        } else if (count.now > 0) {
+          health.textContent = `Status: executing (${count.now} in Now) — finish current lane.`;
+          health.dataset.level = 'ok';
+        } else if (count.next > 0) {
+          health.textContent = `Status: ready queue only (${count.next} in Next) — pull one into Now.`;
+          health.dataset.level = 'info';
+        } else {
+          health.textContent = 'Status: empty board — add first task to begin execution.';
+          health.dataset.level = 'warn';
+        }
+      }
+
       qs('heroTitle').textContent = app.state.heroTitle;
       qs('heroSub').textContent = app.state.heroSub;
       const selectedTask = app.selectedTaskId ? getTaskById(app.selectedTaskId) : null;
