@@ -565,6 +565,7 @@
       <p class="orientation-line" id="objectiveLine">Objective: determining top execution objective…</p>
       <p class="orientation-line" id="orientationLine">Loading orientation…</p>
       <p class="orientation-line" id="tenSecondLine">10-second view: building quick summary…</p>
+      <p class="orientation-line" id="workflowCompass">Workflow compass: Next → Now → Done; Blocked → Next.</p>
       <div class="ia-map" aria-label="10-second workflow map">
         <div class="ia-step">
           <span class="k">1</span>
@@ -1173,6 +1174,17 @@
               ? 'pull top Next into Now'
               : 'add first task';
         tenSecondLine.textContent = `10-second view: focus ${quickFocus} · next ${quickNext} · then copy brief.`;
+      }
+
+      const workflowCompass = qs('workflowCompass');
+      if (workflowCompass) {
+        workflowCompass.textContent = topBlocked
+          ? `Workflow compass: clear ${short(topBlocked.title, 34)} (Blocked → Next), then pull Next → Now.`
+          : topNow
+            ? `Workflow compass: finish ${short(topNow.title, 34)} (Now → Done), then pull Next → Now.`
+            : topNext
+              ? `Workflow compass: pull ${short(topNext.title, 34)} (Next → Now), then execute to Done.`
+              : 'Workflow compass: create first task, set lane to Now, then execute to Done.';
       }
 
       qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
