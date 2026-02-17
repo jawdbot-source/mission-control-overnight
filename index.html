@@ -570,6 +570,7 @@
       </div>
       <p class="sub" id="heroSub">Loading workspace…</p>
       <p class="orientation-line" id="objectiveLine">Objective: determining top execution objective…</p>
+      <p class="orientation-line" id="decisionRuleLine">Decision rule: if blocked, unblock first; otherwise finish Now before pulling more work.</p>
       <button class="btn primary" id="doNowBtn">Do this now: loading…</button>
       <p class="orientation-line" id="orientationLine">Loading orientation…</p>
       <p class="orientation-line" id="tenSecondLine">10-second view: building quick summary…</p>
@@ -1140,6 +1141,17 @@
             : topNext
               ? `Objective: promote ${short(topNext.title, 48)} into Now and start execution.`
               : 'Objective: add first task, assign owner, and begin execution.';
+      }
+
+      const decisionRuleLine = qs('decisionRuleLine');
+      if (decisionRuleLine) {
+        decisionRuleLine.textContent = topBlocked
+          ? 'Decision rule: blockers exist, so unblock first before any new pull.'
+          : topNow
+            ? 'Decision rule: finish active Now task before pulling more work.'
+            : topNext
+              ? 'Decision rule: no active Now task, so pull top Next and start.'
+              : 'Decision rule: no tasks yet, so add one and place it in Now.';
       }
 
       const doNowBtn = qs('doNowBtn');
