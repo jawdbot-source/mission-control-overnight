@@ -290,6 +290,15 @@
       color: #e4eeff;
     }
 
+    .shortcut-strip {
+      border: 1px solid #355078;
+      background: #11223c;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: #dbeaff;
+    }
+
     .btn {
       border: 1px solid #3b5782;
       background: #172a4b;
@@ -552,6 +561,7 @@
       <div class="stats" id="stats"></div>
       <div class="health-strip" id="healthSignal" data-level="info">Status: assessing board…</div>
       <div class="tldr-strip" id="tldrLine">TL;DR: assessing next best action…</div>
+      <div class="shortcut-strip" id="shortcutLine">Shortcuts: [N] add task · [F] open first action · [C] copy brief</div>
       <div class="actions">
         <button class="btn primary" id="addTaskBtn">Add task</button>
         <button class="btn" id="copyPromptBtn">Copy execution brief</button>
@@ -1317,6 +1327,27 @@
         if (evt.key === 'Escape' && qs('taskModal').classList.contains('show')) {
           qs('taskModal').classList.remove('show');
           flashAction('Task creation canceled.', 'info');
+          return;
+        }
+
+        const tag = (evt.target?.tagName || '').toUpperCase();
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (evt.metaKey || evt.ctrlKey || evt.altKey) return;
+
+        const key = (evt.key || '').toLowerCase();
+        if (key === 'n') {
+          evt.preventDefault();
+          qs('addTaskBtn').click();
+          return;
+        }
+        if (key === 'f') {
+          evt.preventDefault();
+          qs('focusFirstActionBtn').click();
+          return;
+        }
+        if (key === 'c') {
+          evt.preventDefault();
+          qs('copyPromptBtn').click();
         }
       });
 
