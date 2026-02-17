@@ -864,6 +864,16 @@
         .sort((a, b) => a.priority - b.priority || a.title.localeCompare(b.title));
     }
 
+    function getDefaultTaskId() {
+      const candidate =
+        sortedTasks('now')[0] ||
+        sortedTasks('blocked')[0] ||
+        sortedTasks('next')[0] ||
+        sortedTasks('done')[0] ||
+        null;
+      return candidate?.id || null;
+    }
+
     function formatAge(ts) {
       const value = Number(ts);
       if (!Number.isFinite(value) || value <= 0) return 'unknown age';
@@ -1610,7 +1620,7 @@
         if (!task) return;
         if (!confirm(`Delete task "${task.title}"?`)) return;
         app.state.tasks = app.state.tasks.filter((t) => t.id !== task.id);
-        app.selectedTaskId = null;
+        app.selectedTaskId = getDefaultTaskId();
         addFeed('Task deleted: ' + task.title, 'change');
         persist();
         render();
@@ -1661,7 +1671,7 @@
           const text = await file.text();
           const parsed = JSON.parse(text);
           app.state = createDefaultState(parsed);
-          app.selectedTaskId = app.state.tasks[0]?.id || null;
+          app.selectedTaskId = getDefaultTaskId();
           addFeed('Board imported from JSON', 'change');
           persist();
           render();
@@ -1676,7 +1686,7 @@
       qs('resetBtn').addEventListener('click', () => {
         if (!confirm('Reset board to baseline state.json?')) return;
         app.state = createDefaultState(app.baseline);
-        app.selectedTaskId = app.state.tasks[0]?.id || null;
+        app.selectedTaskId = getDefaultTaskId();
         addFeed('Board reset to baseline', 'change');
         persist();
         render();
@@ -1762,7 +1772,7 @@
       const baseState = createDefaultState(app.baseline);
       const persisted = loadPersisted();
       app.state = persisted ? createDefaultState(persisted) : baseState;
-      app.selectedTaskId = app.state.tasks[0]?.id || null;
+      app.selectedTaskId = getDefaultTaskId();
 
       wireActions();
       wireQuickNavTracking();
