@@ -641,6 +641,7 @@
         <div class="board-head">
           <div class="board-head-meta">
             <h2>1. Workboard</h2>
+            <span class="muted" id="boardPurposeLine">Purpose: pick the top item and move it across lanes to keep execution flowing.</span>
             <span class="muted" id="boardMeta">No task selected</span>
           </div>
           <div class="row">
@@ -661,6 +662,7 @@
       <aside class="card panel" id="taskPanelSection">
         <section class="panel-section">
           <h3>2. Task details</h3>
+          <div class="muted" id="taskPurposeLine">Purpose: update selected task details, owner, and status before saving.</div>
           <div class="muted" id="taskContextLine">Context: no task selected.</div>
           <div id="taskEmpty" class="empty">Select a task card to edit details and move status.</div>
           <div id="taskEditor" style="display:none; gap:8px;">
@@ -711,6 +713,7 @@
 
         <section class="panel-section" id="strikeDeskSection">
           <h3>3. Strike desk</h3>
+          <div class="muted" id="strikePurposeLine">Purpose: capture Strike coordination notes and generate a copy-ready Strike brief.</div>
           <div class="muted" id="strikePolicy"></div>
           <div>
             <div class="muted">Today focus</div>
@@ -726,6 +729,7 @@
 
         <section class="panel-section" id="updatesSection">
           <h3>4. Recent updates</h3>
+          <div class="muted" id="updatesPurposeLine">Purpose: log progress updates so freshness and execution context stay current.</div>
           <div class="row">
             <input id="feedInput" name="feedInput" autocomplete="off" placeholder="Add a progress note…" style="flex:1" />
             <button class="btn" id="feedAddBtn">Add</button>
