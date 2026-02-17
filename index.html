@@ -63,6 +63,11 @@
     .title { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
     h1 { margin: 0; font-size: clamp(22px, 4vw, 34px); }
     .sub { margin: 0; color: var(--muted); }
+    .orientation-line {
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: #d9e9ff;
+    }
 
     .stats, .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
@@ -505,6 +510,7 @@
         <span class="pill" id="clock">--:--</span>
       </div>
       <p class="sub" id="heroSub">Loading workspace…</p>
+      <p class="orientation-line" id="orientationLine">Loading orientation…</p>
       <div class="ia-map" aria-label="10-second workflow map">
         <div class="ia-step">
           <span class="k">1</span>
@@ -929,6 +935,17 @@
             : topNext
               ? `TL;DR: Pull ${short(topNext.title, 42)} into Now and start execution.`
               : 'TL;DR: Add your first task, assign owner, then execute from Now.';
+      }
+
+      const orientationLine = qs('orientationLine');
+      if (orientationLine) {
+        orientationLine.textContent = topNow
+          ? `Mode: executing • Finish ${short(topNow.title, 44)}.`
+          : topBlocked
+            ? `Mode: blocked • Clear ${short(topBlocked.title, 42)} first.`
+            : topNext
+              ? `Mode: ready • Pull ${short(topNext.title, 44)} into Now.`
+              : 'Mode: setup • Add first task to begin execution.';
       }
 
       qs('iaNow').textContent = topNow ? `Start with: ${topNow.title}` : 'No Now task. Promote one from Next.';
