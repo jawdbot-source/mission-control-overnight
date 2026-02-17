@@ -555,6 +555,7 @@
         <span class="pill" id="clock">--:--</span>
       </div>
       <p class="sub" id="heroSub">Loading workspace…</p>
+      <p class="orientation-line" id="objectiveLine">Objective: determining top execution objective…</p>
       <p class="orientation-line" id="orientationLine">Loading orientation…</p>
       <div class="ia-map" aria-label="10-second workflow map">
         <div class="ia-step">
@@ -1085,6 +1086,17 @@
       const topBlocked = sortedTasks('blocked')[0];
       const firstAction = topNow || topBlocked || topNext || null;
       const short = (text, max = 28) => (text && text.length > max ? `${text.slice(0, max - 1)}…` : text || '');
+
+      const objectiveLine = qs('objectiveLine');
+      if (objectiveLine) {
+        objectiveLine.textContent = topBlocked
+          ? `Objective: clear blocker ${short(topBlocked.title, 46)} to reopen flow.`
+          : topNow
+            ? `Objective: complete ${short(topNow.title, 48)} before pulling new work.`
+            : topNext
+              ? `Objective: promote ${short(topNext.title, 48)} into Now and start execution.`
+              : 'Objective: add first task, assign owner, and begin execution.';
+      }
 
       const atAGlanceLine = qs('atAGlanceLine');
       if (atAGlanceLine) {
