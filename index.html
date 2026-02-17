@@ -578,6 +578,7 @@
       <p class="orientation-line" id="workflowCompass">Workflow compass: Next → Now → Done; Blocked → Next.</p>
       <p class="orientation-line" id="clickPathLine">Click path: preparing first three clicks…</p>
       <p class="orientation-line" id="operatorSequenceLine">Operator sequence: preparing sequence…</p>
+      <p class="orientation-line" id="outcomeLine">Outcome: preparing expected result…</p>
       <p class="orientation-line" id="firstMinutePlanLine">First minute plan: building plan…</p>
       <div class="ia-map" aria-label="10-second workflow map">
         <div class="ia-step">
@@ -1279,6 +1280,17 @@
             : topNext
               ? 'Operator sequence: Pull top Next → Confirm task details → Execute from Now.'
               : 'Operator sequence: Create first task → Assign owner/status → Begin execution.';
+      }
+
+      const outcomeLine = qs('outcomeLine');
+      if (outcomeLine) {
+        outcomeLine.textContent = topBlocked
+          ? 'Outcome: blocker is cleared and flow returns to active execution.'
+          : topNow
+            ? 'Outcome: current Now task is closed and handoff brief is ready.'
+            : topNext
+              ? 'Outcome: execution lane is active again with a clear owner/task.'
+              : 'Outcome: board has a first executable task with defined ownership.';
       }
 
       const firstMinutePlanLine = qs('firstMinutePlanLine');
