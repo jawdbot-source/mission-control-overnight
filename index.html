@@ -459,7 +459,13 @@
     .task-meta { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
 
     .panel { padding: 12px; display: grid; gap: 12px; align-content: start; }
-    .panel-section { border: 1px solid var(--line-soft); border-radius: 10px; padding: 10px; background: #101c32; display: grid; gap: 8px; }
+    .panel-section { border: 1px solid var(--line-soft); border-radius: 10px; padding: 10px; background: #101c32; display: grid; gap: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,.03); }
+    .panel-section[data-section="task"] { border-left: 3px solid #4da8ff; }
+    .panel-section[data-section="brief"] { border-left: 3px solid #8dc6ff; }
+    .panel-section[data-section="validation"] { border-left: 3px solid #7fb2ff; }
+    .panel-section[data-section="heartbeat"] { border-left: 3px solid #6ca4ff; }
+    .panel-section[data-section="strike"] { border-left: 3px solid #9e88ff; }
+    .panel-section[data-section="updates"] { border-left: 3px solid #58c6b3; }
 
     label { font-size: 12px; color: #c4d9ff; display: grid; gap: 4px; }
     input, textarea, select {
@@ -663,7 +669,7 @@
       </article>
 
       <aside class="card panel" id="taskPanelSection">
-        <section class="panel-section">
+        <section class="panel-section" data-section="task">
           <h3>2. Task details</h3>
           <div class="muted" id="taskPurposeLine">Purpose: update selected task details, owner, and status before saving.</div>
           <div class="muted" id="taskContextLine">Context: no task selected.</div>
@@ -699,22 +705,22 @@
           </div>
         </section>
 
-        <section class="panel-section">
+        <section class="panel-section" data-section="brief">
           <h3>Execution brief</h3>
           <div class="prompt-box" id="prompt"></div>
         </section>
 
-        <section class="panel-section">
+        <section class="panel-section" data-section="validation">
           <h3>Validation criteria</h3>
           <div class="checklist" id="criteria"></div>
         </section>
 
-        <section class="panel-section">
+        <section class="panel-section" data-section="heartbeat">
           <h3>Heartbeat loop</h3>
           <div class="muted" id="heartbeatSummary">No loop status yet.</div>
         </section>
 
-        <section class="panel-section" id="strikeDeskSection">
+        <section class="panel-section" id="strikeDeskSection" data-section="strike">
           <h3>3. Strike desk</h3>
           <div class="muted" id="strikePurposeLine">Purpose: capture Strike coordination notes and generate a copy-ready Strike brief.</div>
           <div class="muted" id="strikePolicy"></div>
@@ -730,7 +736,7 @@
           <button class="btn" id="copyStrikeBriefBtn">Copy strike brief</button>
         </section>
 
-        <section class="panel-section" id="updatesSection">
+        <section class="panel-section" id="updatesSection" data-section="updates">
           <h3>4. Recent updates</h3>
           <div class="muted" id="updatesPurposeLine">Purpose: log progress updates so freshness and execution context stay current.</div>
           <div class="row">
